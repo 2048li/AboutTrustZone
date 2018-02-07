@@ -1,2 +1,6 @@
+TrustZone官网镇楼：https://developer.arm.com/technologies/trustzone
+TrustZone入门知识：http://blog.csdn.net/prz999/article/details/40784271
+TrustZone初探(1,2,3)：http://blog.csdn.net/u011279649/article/category/1575789
 TrustZone安全技术研究：https://paper.seebug.org/296/
+ARM TrustZone in QEMU：https://www.linaro.org/blog/arm-trustzone-qemu/
 TrustKernel瓶钵公司[学长的创业公司👍]：https://www.trustkernel.com/downloads/
