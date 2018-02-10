@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="canonical" href="http://blog.csdn.net/guyongqiangx/article/details/78020257"/> 
+    <script type="text/javascript">
+        var username = "guyongqiangx";
+        var _blogger = username;
+        var blog_address = "http://blog.csdn.net/guyongqiangx";
+        var static_host = "http://csdnimg.cn/release/phoenix/";
+        var currentUserName = "xiaoyuzhou66"; 
+        var fileName = '78020257';
+        var commentscount = 0;
+        var islock = false;
+        window.quickReplyflag = true;
+        var totalFloor = 0;
+        var isBole = false;
+        var isDigg = false;
+        var isExpert = false;
+        var isAdm = false;
+        var baiduKey = "%E4%B8%80%E6%96%87trust+zone+csdn";
+        var needInsertBaidu = false;
+        var isShowAds = true;
+    </script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="http://c.csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="http://c.csdnimg.cn/public/static/css/avatar.css">
+                <link rel="stylesheet" href="http://csdnimg.cn/release/phoenix/production/main-305f4ba2cd.css">
+          <link rel="stylesheet" href="http://c.csdnimg.cn/public/common/toolbar/content_toolbar_css/content_toolbar.css">
+
+    <script src="http://csdnimg.cn/rabbit/exposure-click/main-1.0.5.js"></script>
+    <script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/tracking-1.0.2.js" charset="utf-8"></script>
+    <script type="text/javascript" src="http://csdnimg.cn/release/phoenix/production/main-7d75e42869.js"></script>
+
+    <script src="http://dup.baidustatic.com/js/ds.js"></script>
+    <script type="text/javascript">
+        // Traffic Stats of the entire Web site By baidu
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+        // Traffic Stats of the entire Web site By baidu end
+    </script>
+    <meta name="description" content="如果你之前对TrustZone亦无所知，本文值得一看；如果你已经了解了TrustZone，想知道更多的实现细节，抱歉，本文并不适合你，或许阅读ARM官方网站和文档以及各开源项目源码是更好的选择。本文先交代TrustZone的安全背景，然后从较高层次展开介绍TrustZone的工作机制和原理（包括AXI总线架构、CPU、内存和中断模型，以及安全隔离机制），由于涉及安全的原因，本文已经删掉介绍公司自己平台相的部分。" />
+    <meta name="keywords" content="arm,trustzone" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>一篇了解TrustZone - CSDN博客</title>
+    <link href="http://csdnimg.cn/public/favicon.ico" rel="SHORTCUT ICON">
+              <script src="//csdnimg.cn/search/baidu_search-1.0.0.js?v=201802071056&autorun=true&install=true&keyword=%E4%B8%80%E6%96%87trust+zone+csdn"  type="text/javascript"></script>
+            </head>
+<body>
+<script id="toolbar-tpl-scriptId" prod="download" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/content_toolbar.js" type="text/javascript" domain="http://blog.csdn.net/"></script>
+<div class="container clearfix">
+  <main>
+    <div style="display:none;">
+      <img src="" onerror='setTimeout(function(){if(top!==self){window.top.location.href=window.location.href}if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+    </div>
+    <article>
+        <h1 class="csdn_top">一篇了解TrustZone</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2017年09月18日 16:03:15</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics tracking-click" data-mod="popu_377" >
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=arm&t=blog" target="_blank">arm</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=trustzone&t=blog" target="_blank">trustzone</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">2212</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="" >
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post">
+                            <div class="markdown_views">
+                        <p>这篇文章源于老板想了解TrustZone，要求我写一篇文章简单介绍TrustZone的原理。既然是给领导看的，只介绍原理哪里够，因此也添加了公司自己现有TEE环境的设计、实现和发展，也顺带加入了一些题外话。也是因为要给领导看，所以文章也不能涉及太多技术细节，包括TrustZone模块的详细设计以及示例代码等，所以只从总体上讲解了什么是TrustZone，TrustZone是如何实现安全隔离的、TrustZone相关的一些资源等。</p>
+
+<p>如果你之前对TrustZone亦无所知，好吧，本文或许值得你一看；如果你已经了解了TrustZone，想知道更多的实现细节，抱歉，本文并不适合你，或许阅读ARM官方网站和文档以及各开源项目源码是更好的选择。</p>
+
+<p>本文先交代TrustZone的安全背景，然后从较高层次展开介绍TrustZone的工作机制和原理（包括AXI总线架构、CPU、内存和中断模型，以及安全隔离机制），列举了几个常见ARM平台上的实现以及当前博通ARM平台上的状况，最后附带一些TrustZone相关的开源项目以及其他资源链接，全文约7500字。（由于涉及安全的原因，本文已经删掉介绍公司自己平台相关的部分）。</p>
+
+<blockquote>
+  <p>本文内容主要来源于网络，综合了网上的多篇文章，也加入了一些自己的理解，重新组织了文章结构使其便于理解。</p>
+  
+  <p>主要参考的文章包括： <br>
+  - <a href="http://blog.csdn.net/forestcell/article/list/2" target="_blank">TrustZone领域先行者</a> <br>
+  - <a href="http://blog.csdn.net/braveheart95/article/details/8878319" target="_blank">TrustZone技术简介</a> <br>
+  - <a href="http://blog.csdn.net/hovan/article/details/42520879" target="_blank">trust zone之我见</a> <br>
+  - <a href="http://blog.csdn.net/guoqun01/article/details/51425091" target="_blank">简谈高通Trustzone的实现</a></p>
+  
+  <p>本文还参考了贴吧、知乎等部分文章，由于涉及较多，无法一一列举，再次对原作者的付出一并表示感谢！</p>
+  
+  <p>除上面列举的资源外，本文主要资料参考了ARM官方对TrustZone的介绍，主要有： <br>
+  - 网站 <a href="https://developer.arm.com/technologies/trustzone" target="_blank">https://developer.arm.com/technologies/trustzone</a> <br>
+  - 文档 <a href="http://infocenter.arm.com/help/topic/com.arm.doc.prd29-genc-009492c/PRD29-GENC-009492C_trustzone_security_whitepaper.pdf" target="_blank">Building a Secure System using TrustZone Technology</a></p>
+  
+  <p>事实上，前面多篇文章的细节也来源于官方文档。 <br>
+  本人不保留本文的所有权，欢迎转载本文，让更多的人来了解TrustZone。由于不想再次以类似 《TrustZone原理介绍》 一类作为标题，但又不知道以什么作为标题贴切，所以随手用了现在标题党的套路，抱歉。</p>
+</blockquote>
+
+
+
+<h2 id="1-trustzone介绍">1. TrustZone介绍</h2>
+
+
+
+<h3 id="11-安全背景">1.1 安全背景</h3>
+
+<p>在介绍TrustZone前有必要简单回顾下目前的一些安全手段。</p>
+
+<p>CPU通过内存映射手段给每个进程营造一个单独的地址空间来隔离多个进程的代码和数据，通过内核空间和用户空间不同的特权级来隔离操作系统和用户进程的代码和数据。但由于内存中的代码和数据都是明文，容易被同处于内存中的其它应用偷窥，因此出现了扩展的安全模块，应用将加密数据送往安全模块，由安全模块处理完后再返回结果给相应的应用。</p>
+
+<p>很多消费电子设备都使用扩展的安全模块来确保数据安全，目前常见的方式有：</p>
+
+<ol>
+<li><p>外部挂接硬件安全模块</p>
+
+<p>数据的处理交由外部的安全模块实现，这些模块能够保护自己的资源和密钥等数据的安全，如SIM卡、各种智能卡或连接到外部的硬件加解密模块等，但其同主芯片的通信线路暴露在外部，容易被监听破解。另外，通信的速率比较低。</p></li>
+<li><p>内部集成硬件安全模块</p>
+
+<p>将外部安全模块的功能集成到芯片内，因此一个芯片上至少有两个核：一个普通核和一个安全核。优点是核与核之间的通信在芯片内部实现，不再暴露在外面。缺点是核之间的通信速度仍然较低，而且单独的安全核性能有限，还会会占用SoC面积，成本较高。</p></li>
+</ol>
+
+
+
+<h3 id="12-trustzone是个什么鬼">1.2 TrustZone是个什么鬼？</h3>
+
+<p>TrustZone是ARM针对消费电子设备设计的一种硬件架构，其目的是为消费电子产品构建一个安全框架来抵御各种可能的攻击。</p>
+
+<p>TrustZone在概念上将SoC的硬件和软件资源划分为安全(Secure World)和非安全(Normal World)两个世界，所有需要保密的操作在安全世界执行（如指纹识别、密码处理、数据加解密、安全认证等），其余操作在非安全世界执行（如用户操作系统、各种应用程序等），安全世界和非安全世界通过一个名为Monitor Mode的模式进行转换，如图1：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/ns-vs-se-1.png?raw=true" alt="ARM的安全世界和非安全世界" title=""></p>
+
+<p>图1. ARM的安全世界和非安全世界</p>
+
+<p>处理器架构上，TrustZone将每个物理核虚拟为两个核，一个非安全核（Non-secure Core, NS Core），运行非安全世界的代码；和另一个安全核（Secure Core），运行安全世界的代码。</p>
+
+<p>两个虚拟的核以基于时间片的方式运行，根据需要实时占用物理核，并通过Monitor Mode在安全世界和非安全世界之间切换，类似同一CPU下的多应用程序环境，不同的是多应用程序环境下操作系统实现的是进程间切换，而Trustzone下的Monitor Mode实现了同一CPU上两个操作系统间的切换。</p>
+
+<p>AMBA3 AXI(AMBA3 <br>
+Advanced eXtensble Interface)系统总线作为TrustZone的基础架构设施，提供了安全世界和非安全世界的隔离机制，确保非安全核只能访问非安全世界的系统资源，而安全核能访问所有资源，因此安全世界的资源不会被非安全世界（或普通世界）所访问。</p>
+
+<p>设计上，TrustZone并不是采用一刀切的方式让每个芯片厂家都使用同样的实现。总体上以AMBA3 AXI总线为基础，针对不同的应用场景设计了各种安全组件，芯片厂商根据具体的安全需求，选择不同的安全组件来构建他们的TrustZone实现。</p>
+
+<p>其中主要的组件有：</p>
+
+<ul>
+<li><p>必选组件</p>
+
+<ul><li>AMBA3 AXI总线，安全机制的基础设施</li>
+<li>虚拟化的ARM Core，虚拟安全和非安全核</li>
+<li>TZPC (TrustZone Protection Controller)，根据需要控制外设的安全特性</li>
+<li>TZASC (TrustZone Address Space Controller)，对内存进行安全和非安全区域划分和保护</li></ul></li>
+<li><p>可选组件</p>
+
+<ul><li>TZMA (TrustZone Memory Adapter)，片上ROM或RAM安全区域和非安全区域的划分和保护</li>
+<li>AXI-to-APB bridge，桥接APB总线，配合TZPC使APB总线外设支持TrustZone安全特性</li></ul></li>
+</ul>
+
+<p>除了以上列出的组件外，还有诸如 Level 2 Cache Controller, DMA Controller, Generic Interrupt Controller等。</p>
+
+<p>逻辑上，安全世界中，安全系统的OS提供统一的服务，针对不同的安全需求加载不同的安全应用TA(Trusted Application)。 例如：针对某具体DRM的TA，针对DTCP-IP的TA，针对HDCP 2.0验证的TA等。</p>
+
+<p>图2是一个ARM官网对TrustZone介绍的应用示意图：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/Architecture-of-TEE%20copy.png?raw=true" alt="基于TrustZone的应用示意图" title=""></p>
+
+<p>图2. 基于TrustZone的应用示意图</p>
+
+<p>图中左边蓝色部分Rich OS Application Environment(REE)表示用户操作环境，可以运行各种应用，例如电视或手机的用户操作系统，图中右边绿色部分Trusted Execution Envrionment(TEE)表示系统的安全环境，运行Trusted OS，在此基础上执行可信任应用，包括身份验证、授权管理、DRM认证等，这部分隐藏在用户界面背后，独立于用户操作环境，为用户操作环境提供安全服务。</p>
+
+<blockquote>
+  <p>可信执行环境（TEE, Trusted Execution Environment）是Global Platform（GP）提出的概念。对应于TEE还有一个REE(Rich Execution Environment)概念，分别对应于安全世界(Secure World)和非安全世界(Non-secure World, Normal World)。</p>
+  
+  <p>GlobalPlatform（GP）是跨行业的国际标准组织，致力于开发、制定并发布安全芯片的技术标准，以促进多应用产业环境的管理 及其安全、可互操作的业务部署。目标是创建一个标准化的基础架构, 加快安全应用程序及其关联资源的部署，如数据和密钥，同时保护安全应用程序及其关联资源免受软件方面的攻击。</p>
+</blockquote>
+
+
+
+<h2 id="2-trustzone原理和设计">2. TrustZone原理和设计</h2>
+
+<p>以下主要从TrustZone的总线设计，CPU设计(包括处理器模型、内存模型和中断模型)和安全隔离机制来介绍TrustZone的设计和工作原理。</p>
+
+
+
+<h3 id="21-总线设计">2.1 总线设计</h3>
+
+<ul>
+<li>总线</li>
+</ul>
+
+<p>设计上，TrustZone 在系统总线上针对每一个信道的读写增加了一个额外的控制信号位，这个控制位叫做Non-Secure或者NS位，是AMBA3 AXI总线针对TrustZone作出的最重要、最核心的扩展设计。</p>
+
+<p>这个控制信号针对读和写分别叫做ARPORT[1]和AWPORT[1]：</p>
+
+<ul>
+<li><strong>ARPROT[1]</strong>: 用于读操作(Read transaction), 低表示Secure, 高表示Non-Secure</li>
+<li><strong>AWPROT[1]</strong>: 用于写操作(Write transaction), 低表示Secure，高表示Non-Secure</li>
+</ul>
+
+<p>总线上的所有主设备(master)在发起新的操作(transaction)时会设置这些信号，总线或从设备(slave)上解析模块会对主设备发起的信号进行辨识，来确保主设备发起的操作在安全上没有违规。</p>
+
+<p>例如：硬件设计上，所有非安全世界的主设备（Non-Secure masters）在操作时必须将信号的NS位置高，而NS位置高又使得其无法访问总线上安全世界的从设备（Secure Slaves），简单来说就是对非安全世界主设备发出的地址信号进行解码时在安全世界中找不到对应的从设备，从而导致操作失败。</p>
+
+<blockquote>
+  <p>NS控制信号在AMBA3 AXI总线规范中定义。可以将其看作为原有地址的扩展位，如果原有32为寻址，增加NS可以看成是33位寻址，其中一半的32位物理寻址位于安全世界，另一半32位物理寻址位于非安全世界。</p>
+</blockquote>
+
+<p>当然，非安全世界的主设备尝试访问安全世界的从设备会引发访问错误，可能是SLVERR(slave error)或者DECERR(decode error)，具体的错误依赖于其访问外设的设计或系统总线的配置。</p>
+
+<ul>
+<li>外设</li>
+</ul>
+
+<p>在TrustZone出现前，ARM的外设基于AMBA2 APB (Advanced Peripheral Bus)总线协议，但是APB总线上不存在类似AXI总线上的NS控制位。为了兼容已经存在的APB总线设计，AMBA3规范中包含了AXI-to-APB bridge组件，这样就确保基于AMBA2 APB的外设同AMBA3 AXI的系统兼容。AXI-to-APB bridge负责管理APB总线设备的安全事宜，其会拒绝不合理的安全请求，保证这些请求不会被转发到相应的外设。</p>
+
+<p>例如：新一代的芯片可以通过增加AXI-to-APB bridge组件来沿用上一代芯片的设计来使其外围设备可以支持TrustZone。</p>
+
+
+
+<h3 id="22-处理器设计">2.2 处理器设计</h3>
+
+
+
+<h4 id="221-处理器模型">2.2.1 处理器模型</h4>
+
+<p>TrustZone中，每个物理处理器核被虚拟为一个安全核(Secure)和一个非安全核(Non-Secure)，安全核运行安全世界的代码，非安全核运行除安全世界外的其它代码。由于安全世界和非安全世界的代码采用时间片机制轮流运行在同一个物理核上，相应的节省了一个物理处理器核。</p>
+
+<blockquote>
+  <p>多核处理器上，也有建议说让将某一个或几个核指定为安全专用核，只运行安全系统代码来构建安全世界，其余核运行非安全代码，暂不清楚目前有哪些平台采用这个实现。</p>
+</blockquote>
+
+<p>图3中，系统有4个物理核，每个又分为两个虚拟核（安全核和非安全核）的情况：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/ns-vs-se-4.png?raw=true" alt="多核处理器上的安全核和非安全核" title=""></p>
+
+<p>图3. 多核处理器上的安全核和非安全核</p>
+
+
+
+<h4 id="222-l1内存模型">2.2.2 L1内存模型</h4>
+
+<ul>
+<li>MMU</li>
+</ul>
+
+<blockquote>
+  <p>MMU是一种硬件电路，它包含两类部件，一类是分段部件，一类是分页部件，对应于内存管理的分段机制和分页机制。分段机制把一个逻辑地址转换为线性地址；接着，分页机制把一个线性地址转换为物理地址。</p>
+  
+  <p>当CPU访问一个虚拟地址时，这个虚地址被送到MMU翻译，硬件首先把它和TLB中的所有条目同时(并行地)进行比较，如果它的虚页号在TLB中，并且访问没有违反保护位，它的页面会直接从TLB中取出而不去访问页表，从而提高地址转换的效率。</p>
+</blockquote>
+
+<p>安全世界和非安全世界都有自己的虚拟MMU，各自管理物理地址的映射。实际上只是两个世界都有一份TTBR0、TTBR1、TTBCR寄存器，因此就会对应两个MMU表。</p>
+
+<p>尽管MMU有两套，但TBL缓存硬件上只有一套，因此TBL对于两个世界来说是共享的，其通过NS位来标志其每一项具体属于哪一个世界。这样在两个世界间进行切换时不再需要重新刷新TLB，提高执行效率。</p>
+
+<blockquote>
+  <p>对于TLB共享并不是硬性规定的，部分芯片在两个世界间切换时可能通过硬件部分或全部刷新TLB。</p>
+</blockquote>
+
+<ul>
+<li>Cache</li>
+</ul>
+
+<p>同TLB类似，硬件上两个世界共享一套Cache，具体的Cache数据属于哪一个世界也由其NS位指定，在世界间切换也不需要刷新Cache。</p>
+
+
+
+<h4 id="223-中断模型">2.2.3 中断模型</h4>
+
+<p>基于TrustZone的处理器有三套异常向量表：</p>
+
+<ul>
+<li>一套用于非安全世界，</li>
+<li>一套用于安全世界，</li>
+<li>还有一套用于Monitor模式。</li>
+</ul>
+
+<p>与之前非TrustZone的处理器不同的是，这三套中断向量表的基地址在运行时可以通过CP15的寄存器VBAR(Vector Base Address Register)进行修改。</p>
+
+<p>复位时，安全世界的中断向量表由处理器的输入信号VINITHI决定，没有设置时为0x00000000，有设置时为0xFFFF0000；非安全世界和Monitor模式的中断向量表默认没有设置，需要通过软件设置后才能使用。</p>
+
+<p>默认情况下，IRQ和FIQ异常发生后系统直接进入Monitor模式，由于IRQ是绝大多数环境下最常见的中断源，因此ARM建议配置IRQ作为非安全世界的中断源，FIQ作为安全世界的中断源。这样配置有两个优点：</p>
+
+<ul>
+<li>当处理器运行在非安全世界时，IRQ直接进入非安全世界的处理函数；如果处理器运行在安全世界，当IRQ发生时，会先进入到Monitor模式，然后跳到非安全世界的IRQ处理函数执行</li>
+<li>仅将FIQ配置为安全世界的中断源，而IRQ保持不变，现有代码仅需做少量修改就可以满足</li>
+</ul>
+
+<p>将IRQ设置为非安全世界的中断源时系统IRQ的切换见图4：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/ns-vs-se-3.png?raw=true" alt="IRQ作为非安全世界的中断源" title=""></p>
+
+<p>图4. IRQ作为非安全世界的中断源</p>
+
+
+
+<h4 id="224-系统模式切换">2.2.4 系统模式切换</h4>
+
+<p>基于TrustZone的系统有三种状态，安全世界、非安全世界和用于二者切换的Monitor Mode。</p>
+
+<p>协处理器CP15的寄存器SCR(Secure Configuration Register)有一个NS位用于指示当前处理器位于哪一个世界，该寄存器在非安全世界是不能访问的。当CPU处于Monitor Mode时，无论NS位是0还是1，处理器都是在安全世界运行代码。因此Monitor Mode下总是安全世界，但如果此时NS为1，访问CP15的其它寄存器获取到的是其在非安全世界的值。</p>
+
+
+
+<h5 id="非安全世界到monitor模式的切换">非安全世界到Monitor模式的切换</h5>
+
+<p>处理器从非安全世界进入Monitor Mode的操作由系统严格控制，而且所有这些操作在Monitor Mode看来都属于异常。 <br>
+从非安全世界到Monitor Mode的操作可通过以下方式触发：</p>
+
+<ul>
+<li>软件执行SMC (Secure Monitor Call)指令</li>
+<li>硬件异常机制的一个子集（换而言之，并非所有硬件异常都可以触发进入Monitor Mode），包括： <br>
+<ul><li>IRQ</li>
+<li>FIQ</li>
+<li>external Data Abort</li>
+<li>external Prefetch Abort</li></ul></li>
+</ul>
+
+
+
+<h5 id="monitor-mode">Monitor Mode</h5>
+
+<p>Monitor Mode内执行的代码依赖于具体的实现，其功能类似于进程切换，不同的是这里是不同模式间CPU状态切换。</p>
+
+<p>软件在Monitor Mode下先保存当前世界的状态，然后恢复下一个世界的状态。操作完成后以从异常返回的方式开始运行下一个世界的代码。</p>
+
+
+
+<h5 id="为什么安全模式和非安全模式不能直接切换">为什么安全模式和非安全模式不能直接切换？</h5>
+
+<p>非安全世界无权访问CP15的SCR寄存器，所以无法通过设置NS来直接切换到安全世界，只能先转换到Monitor Mode，再到安全世界。</p>
+
+<p>如果软件运行在安全世界(非Monitor Mode)下，通过将CP15的NS位置1，安全世界可以直接跳转到非安全世界，由于此时CPU的流水线和寄存器还遗留了安全世界的数据和设置，非安全模式下的应用可以获取到这些数据，会有极大的安全风险。因此，只建议在Monitor Mode下通过设置NS位来切换到非安全模式。</p>
+
+<p>综上，安全世界和非安全世界不存在直接的切换，所有切换操作都通过Monitor Mode来执行。</p>
+
+<p>图5展现了安全世界和非安全世界之间的切换方式：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/ns-vs-se-2.png?raw=true" alt="安全世界和非安全世界之间的切换" title=""></p>
+
+<p>图5. 安全世界和非安全世界之间的切换 </p>
+
+
+
+<h3 id="23-隔离机制">2.3 隔离机制</h3>
+
+<p>除了CPU执行时实行安全世界和非安全世界的隔离外，AMBA3 AXI总线提供了外设隔离的基础。</p>
+
+
+
+<h4 id="231-内存隔离机制">2.3.1 内存隔离机制</h4>
+
+<p>这里的内存指外部的DDR和片上的ROM以及SRAM，其隔离和保护通过总线组件TZASC和TZMA的设置来实现。</p>
+
+<ul>
+<li>TZASC (TrustZone Address Space Controller)  <br>
+<ul><li>TZASC可以把外部DDR分成多个区域，每个区域可以单独配置为安全或非安全区域，非安全世界的代码和应用只能访问非安全区域。TZASC只能用于内存设备，不适合用于配置块设备，如Nand Flash。</li></ul></li>
+<li>TZMA (TrustZone Memory Adapter) <br>
+<ul><li>TZMA可以把片上ROM和SRAM隔离出安全和非安全区域。TZMA最大可以将片上存储的低2MB配置为安全区域，其余部分配置为非安全区域。大小划分上，片上安全区域可以在芯片出厂前设置为固定大小，或运行时通过TZPC动态配置。TZMA使用上有些限制，其不适用于外部内存划分，而且也只能配置一个安全区域。</li></ul></li>
+</ul>
+
+
+
+<h4 id="232-外设隔离机制">2.3.2 外设隔离机制</h4>
+
+<p>外设上，基于APB总线的设备不支持AXI总线的NS控制信号，所以AXI到APB总线需要AXI-to-APB bridge设备连接，除此之外，还需要TZPC (TrustZone Protection Controller) 来向APB总线上的设备提供类似AXI上的NS控制信号。</p>
+
+<p>由于TZPC可以在运行时动态设置，这就决定了外设的安全特性是动态变化的，例如键盘平时可以作为非安全的输入设备，在输入密码时可以配置为安全设备，只允许安全世界访问。</p>
+
+
+
+<h4 id="233-隔离机制示意图">2.3.3 隔离机制示意图</h4>
+
+<p>整个系统内存和外设隔离机制示意图见图6.</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/memory-isolation.png?raw=true" alt="系统内存和外设隔离机制示意图" title=""></p>
+
+<p>图6. 系统内存和外设隔离机制示意图</p>
+
+<blockquote>
+  <p>此图来源于网上，实际上TZPC还连接到片内的ROM/RAM设备上，用于配置片上存储的安全区域。</p>
+</blockquote>
+
+
+
+<h3 id="24-安全启动">2.4 安全启动</h3>
+
+<p>AMBA3 AXI总线机制隔离出安全世界和非安全世界，但这是系统启动之后的事情。如何确保系统本身是安全的呢？这就涉及到系统启动的过程。</p>
+
+<p>系统上电复位后，先从安全世界开始执行。安全世界会对非安全世界的bootloader进行验证，确保非安全世界执行的代码经过授权而没有被篡改过。然后非安全世界的bootloader会加载非安全世界的OS，完成整个系统的启动。</p>
+
+<p>在非安全系统的bootloader加载OS时，仍然需要安全世界对OS的代码进行验证，确保没有被篡改。</p>
+
+<p>图7是典型的TrustZone芯片的启动流程：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/ns-vs-se-5.png?raw=true" alt="典型的TruestZone芯片启动流程" title=""></p>
+
+<p>图7. 典型的TruestZone芯片启动流程</p>
+
+<p>整个启动流程跟目前博通平台的安全启动原理基本一致，上电后安全芯片先启动，然后校验主芯片的bootloader，接下来bootloader提交系统的OS和文件系统给BSP进行校验，通过后加载主系统，确保主系统是安全的。</p>
+
+<p>从上电复位开始的整个启动过程中，下一级的安全基于上一级的验证，最终依赖于芯片内置的OTP和安全硬件，逐级的验证构成了整个系统的信任链。信任链中的某一个环节被破坏，都会导致整个系统不安全。</p>
+
+
+
+<h2 id="3-各家trustzone实现">3. 各家TrustZone实现</h2>
+
+<p>基于安全考虑，各家TrustZone都实行闭源，关于其实现细节的介绍都较少。</p>
+
+<p>网上能找到少许关于高通方案上TrustZone的介绍：</p>
+
+<ul>
+<li>安全世界 QSEE (Qualcomm Secure Execution Environment)</li>
+<li>非安全世界 HLOS (High Level OS)</li>
+</ul>
+
+<p>整个系统的架构如图8：</p>
+
+<p><img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/qsee-hlos.png?raw=true" alt="image" title=""></p>
+
+<p>图8. 高通QSEE系统架构图</p>
+
+
+
+<h2 id="4-其它">4. 其它</h2>
+
+<ul>
+<li><p>ARMv8-A架构定义了四个异常等级，分别为EL0到EL3，其中数字越大代表特权(privilege)越大:</p>
+
+<ul><li>EL0: 无特权模式(unprivileged)</li>
+<li>EL1: 操作系统内核模式(OS kernel mode)</li>
+<li>EL2: 虚拟机监视器模式(Hypervisor mode)</li>
+<li>EL3: TrustZone monitor mode <br>
+<img src="https://github.com/guyongqiangx/blog/blob/dev/trustzone/images/armv8-a-security-level.png?raw=true" alt="ARMv8-A Security Level" title=""></li></ul></li>
+<li><p>TrustZone设计的相关方</p>
+
+<ul><li>ARM公司，定义TrustZone并实现硬件设计，TEE，TZAPI等</li>
+<li>芯片厂家，在具体芯片上实现TrustZone设计，包括三星、高通、MTK、TI、ST、华为等</li>
+<li>应用提供方，如DRM厂家和安全应用开发商，实现DRM、Playready、DTCP-IP和一些其它安全应用开发和认证</li></ul></li>
+<li><p>Trust OS</p>
+
+<p>TEE环境下也要有一个操作系统，各家都有自己的Trustzone的操作系统，如Trustonic、高通的QSEE、国内的豆荚，还有开源的OPTEE等。在操作系统之上自然要有应用程序，在Trustzone里面我们一般叫TrustApp，当然TEE里面每个TrustApp都在一个沙盒里，互相之间是隔离的。比如说支付，就可以做成一个App（需要注意的是，和Normal World里面的App是两个概念），这个App简单来说就负责用私钥把网上发来的Challenge签个名，而这个签名的动作是需要在Secure World里面做的，避免恶意程序窃取到私钥来伪造签名。</p>
+
+<p>例如支付宝，其实支付宝也是只支持几个Trust OS的。同时，支付宝还定义了一系列标准，用来完成他的行为。</p>
+
+<p>现在的Trust OS大都会遵循GlobalPlatform的规范，这个组织致力于制定统一的Trust OS的API的接口规范，这样一个TrustApp只要用GP API，就可以方便移植到各个不同的TEE操作系统上了。</p></li>
+<li><p>Intel 平台的 SGX</p>
+
+<p>针对可信计算，类似ARM的TrustZone，Intel也针对x86平台提出了自己的安全架构SGX：</p>
+
+<p>Intel® Software Guard Extensions (Intel® SGX)</p>
+
+<p><a href="https://software.intel.com/zh-cn/sgx-sdk" target="_blank">https://software.intel.com/zh-cn/sgx-sdk</a></p>
+
+<p>SGX全称Intel Software Guard Extensions，顾名思义，其是对因特尔体系（IA）的一个扩展，用于增强软件的安全性。这种方式并不是识别和隔离平台上的所有恶意软件，而是将合法软件的安全操作封装在一个enclave中，保护其不受恶意软件的攻击，特权或者非特权的软件都无法访问enclave，也就是说，一旦软件和数据位于enclave中，即便操作系统或者和VMM（Hypervisor）也无法影响enclave里面的代码和数据。Enclave的安全边界只包含CPU和它自身。SGX创建的enclave也可以理解为一个可信执行环境TEE（Trusted Execution Environment）。不过其与ARM TrustZone（TZ）还是有一点小区别的，TZ中通过CPU划分为两个隔离环境（安全世界和正常世界），两者之间通过SMC指令通信；而SGX中一个CPU可以运行多个安全enclaves，并发执行亦可。</p>
+
+<p>简单来讲, Intel SGX最关键的优势在于将程序以外的software stack如OS和BIOS都排除在了TCB（Trusted Computing Base）以外。换句话说，就是在容器enclave里的code只信任自己和intel的CPU。</p>
+
+<blockquote>
+  <p>网上有人是这样对比TrustZone和SGX的：</p>
+  
+  <p>Trustzone默认相信SecureOS，安全世界。SGX仅相信CPU core，通过SGX指令构建enclave容器。简单比喻，TEE是个公用大保险柜，什么东西都装进去，有漏洞的app可能也进去了，而且保险柜钥匙在管理员手上，必须相信管理员。SGX每个app有自己的保险柜，钥匙在自己手上</p>
+  
+  <p>SGX要进入工业界应用尚需时间，一个重要的问题是现在在intel发行的服务器芯片上还没有SGX，而SGX的重要应用就是在数据中心和云端的应用。</p>
+</blockquote></li>
+</ul>
+
+
+
+<h2 id="5-trustzone开源项目">5. TrustZone开源项目</h2>
+
+<p>除了各家私有实现外，ARM也有不少开源项目，知名度较高的有：</p>
+
+<ul>
+<li><p>Arm Trusted Firmware</p>
+
+<ul><li>基于ARMv8-A应用处理器，ARM官方提供了一个开源参考实现BL31。</li>
+<li><a href="https://github.com/ARM-software/arm-trusted-firmware" target="_blank">https://github.com/ARM-software/arm-trusted-firmware</a></li></ul></li>
+<li><p>Openvirtualization</p>
+
+<ul><li>带有一些商业属性的开源项目，部分TEE实现只有商业版支持 </li>
+<li><a href="http://www.openvirtualization.org/" target="_blank">http://www.openvirtualization.org/</a></li></ul></li>
+<li><p>Op-Tee</p>
+
+<ul><li>Linaro 推出的开源TEE</li>
+<li><a href="https://github.com/OP-TEE" target="_blank">https://github.com/OP-TEE</a></li></ul></li>
+</ul>
+
+
+
+<h2 id="6-参考">6. 参考</h2>
+
+<ul>
+<li>Architecture <br>
+<ul><li><a href="https://developer.arm.com/products/architecture" target="_blank">https://developer.arm.com/products/architecture</a></li></ul></li>
+<li><a href="https://developer.arm.com/technologies/trustzone" target="_blank">TrustZone: https://developer.arm.com/technologies/trustzone</a></li>
+<li><a href="http://infocenter.arm.com/help/topic/com.arm.doc.prd29-genc-009492c/PRD29-GENC-009492C_trustzone_security_whitepaper.pdf" target="_blank">Building a Secure System using TrustZone Technology</a></li>
+<li>ARM Trusted Firmware <br>
+<ul><li><a href="https://github.com/ARM-software/arm-trusted-firmware" target="_blank">https://github.com/ARM-software/arm-trusted-firmware</a></li></ul></li>
+<li>Development of TEE and Secure Monitor Code <br>
+<ul><li><a href="http://www.arm.com/products/security-on-arm/trustzone/tee-and-smc" target="_blank">http://www.arm.com/products/security-on-arm/trustzone/tee-and-smc</a></li></ul></li>
+</ul>
+
+
+
+<h2 id="题外话">题外话</h2>
+
+<p>本文最初叫做《了解TrustZone，读了这篇就够了》，发完一看文后的推荐，我去，叫做《xxx，看这篇就够了》的标题的文章多了去了，几十篇吧~~好吧，我决定改了，换一个标题党……</p>                </div>
+                                                <link rel="stylesheet" href="http://csdnimg.cn/release/phoenix/production/markdown_views-0bc64ada25.css" />
+                                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics tracking-click" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+        版权声明：本文为guyongqiangx原创，欢迎评论留言和转载收藏，转载请注明出处：http://blog.csdn.net/guyongqiangx      </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics tracking-click"  data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix" id="comments">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                                  <div class="comment_area clearfix">
+                      <div class="userimg">
+                        <a href="http://my.csdn.net/xiaoyuzhou66">
+                          <img src="http://avatar.csdn.net/1/E/3/3_xiaoyuzhou66.jpg">
+                        </a>
+                      </div>
+                  
+                      <form action="http://blog.csdn.net/guyongqiangx/phoenix/comment/submit?id=78020257" method="post" onsubmit="return subform(this);" id="commentform">
+                          <textarea class="comment_content" name="comment_content" id="comment_content" placeholder="发表你的评论"></textarea>
+                          <div class="bot_bar clearfix">
+                              <div id="ubbtools" class="add_code">
+                                  <a href="#insertcode" code="code" target="_self"><i class="icon iconfont icon-daima"></i></a>
+                              </div>
+
+                              <input type="hidden" id="comment_replyId" name="comment_replyId">
+                              <input type="hidden" id="comment_userId" name="comment_userId" value="">
+                              <input type="hidden" id="commentId" name="commentId" value="">
+                              <input type="submit" class="btn btn-redborder" value="发表评论">
+                              <span id="tip_comment" class="tip">
+                              <div style="display: none;" class="csdn-tracking-statistics tracking-click" data-mod="popu_384"><a href="#" target="_blank" class="comment_area_btn">发表评论</a></div>
+
+                              <div id="lang_list" code="code">
+                                  <a href="#html" style="width:95px;" class="long_name" target="_self">HTML/XML</a>
+                                  <a href="#objc" style="width:95px;" class="long_name" target="_self">objective-c</a>
+                                  <a href="#delphi" style="width:58px;" class="zhong_name" target="_self">Delphi</a>
+                                  <a href="#ruby" class="zhong_name" target="_self">Ruby</a>
+                                  <a href="#php" target="_self">PHP</a>
+                                  <a href="#csharp" class="duan_name" target="_self">C#</a>
+                                  <a style=" border-right: none;" href="#cpp" class="duan_name" target="_self">C++</a>
+                                  <a style=" border-bottom:none;width:95px;" href="#javascript" class="long_name" target="_self">JavaScript</a>
+                                  <a style=" border-bottom:none;width:95px;" href="#vb" class="long_name" target="_self">Visual Basic</a>
+                                  <a style=" border-bottom:none;" href="#python" class="zhong_name" target="_self">Python</a>
+                                  <a style=" border-bottom:none;" href="#java" class="zhong_name" target="_self">Java</a>
+                                  <a style="border-bottom:none;" href="#css" class="duan_name" target="_self">CSS</a>
+                                  <a style="border-bottom:none;" href="#sql" class="duan_name" target="_self">SQL</a>
+                                  <a style="border:none; " href="#plain" class="duan_name" target="_self">其它</a>
+                                  <span class="arrb"></span>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <!-- <h3 class="recommend_tit" id="related">相关文章推荐</h3> -->
+      <div class="recommend_list clearfix" id="rasss">
+                                                                        <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/u012412689/article/details/51243421"  target="_blank" strategy="BlogCommendFromBaidu_0">
+                        <dd class="clearfix">
+                          <h2 class="">trustzone硬件架构</h2>
+                          <div class="summary">
+                              一、硬件架构
+1、AXI总线   
+（1）通过系统总线的NS位保护，为1表示Non-Secure，为0代表Secure
+（2）通过AXI-to-APB bridge保护外设安全，安全的连接外设
+（3）...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/C/C/E/3_u012412689.jpg" alt="u012412689" title="u012412689"/></li>
+                              <li class="user_name">u012412689</li>
+                              <li class="time">2016年04月25日 16:46</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1533</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/feibabeibei_beibei/article/details/72852422"  target="_blank" strategy="BlogCommendFromBaidu_1">
+                        <dd class="clearfix">
+                          <h2 class="">Trustzone的一些理解</h2>
+                          <div class="summary">
+                              转载于http://gnunu-embedded.blogspot.com/2009/04/armtrustzone.html
+TrustZone是ARM对ARM6的扩展，其实只是增加了一条指令，一个...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/C/7/F/3_feibabeibei_beibei.jpg" alt="feibabeibei_beibei" title="feibabeibei_beibei"/></li>
+                              <li class="user_name">feibabeibei_beibei</li>
+                              <li class="time">2017年06月03日 15:36</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>673</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                      <dl class="">
+                  <script>
+                  (function() {
+                    var s = "_" + Math.random().toString(36).slice(2);
+                    document.write('<div id="' + s + '"></div>');
+                    (window.slotbydup=window.slotbydup || []).push({
+                      id: '4765209',
+                      container: s,
+                      size: '808,120',
+                      display: 'inlay-fix'
+                    });
+                  })();
+                  </script>
+                </dl>
+                                                                <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/guyongqiangx/article/details/78020257"  target="_blank" strategy="searchFromBaidu_2">
+                        <dd class="clearfix">
+                          <h2 class="">一篇了解TrustZone</h2>
+                          <div class="summary">
+                              如果你之前对TrustZone亦无所知，本文值得一看；如果你已经了解了TrustZone，想知道更多的实现细节，抱歉，本文并不适合你，或许阅读ARM官方网站和文档以及各开源项目源码是更好的选择。本文先...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/7/E/9/3_guyongqiangx.jpg" alt="guyongqiangx" title="guyongqiangx"/></li>
+                              <li class="user_name">guyongqiangx</li>
+                              <li class="time">2017年09月18日 16:03</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2212</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/ken_yjj/article/details/6797300"  target="_blank" strategy="BlogCommendFromBaidu_3">
+                        <dd class="clearfix">
+                          <h2 class="">ARM的TrustZone技术</h2>
+                          <div class="summary">
+                              Come From：
+ 
+http://www.arm.com/zh/products/processors/technologies/trustzone.php
+ 
+TrustZone
+...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/5/8/0/3_ken_yjj.jpg" alt="ken_yjj" title="ken_yjj"/></li>
+                              <li class="user_name">ken_yjj</li>
+                              <li class="time">2011年09月21日 14:56</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>16534</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/forestcell/article/details/14498005"  target="_blank" strategy="BlogCommendFromBaidu_4">
+                        <dd class="clearfix">
+                          <h2 class="">TrustZone——Android的救星？</h2>
+                          <div class="summary">
+                              背景知识
+安卓手机太不安全了。我觉得敢在安卓手机上，使用手机银行的算是勇者了吧。在安卓手机上，如果root了，基本上没有秘密可言了。各大公司的APP，各个比较好用的APP或游戏，都会获取到很多游戏。...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/9/6/1/3_forestcell.jpg" alt="forestcell" title="forestcell"/></li>
+                              <li class="user_name">forestcell</li>
+                              <li class="time">2013年11月08日 00:00</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>22243</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/u011279649/article/details/50935594"  target="_blank" strategy="BlogCommendFromBaidu_5">
+                        <dd class="clearfix">
+                          <h2 class="">TrustZone初探 （二）</h2>
+                          <div class="summary">
+                              5. trustzone和中断
+中断也是隔离的，安全世界和普通世界有独立的VBAR寄存器，中断向量表。唯独monitor模式下有自己的中断向量表，寄存器是MVBAR，smc指令就是跳到这个向量表。G...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/2/B/4/3_u011279649.jpg" alt="u011279649" title="u011279649"/></li>
+                              <li class="user_name">u011279649</li>
+                              <li class="time">2016年03月20日 10:58</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1309</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/u011279649/article/details/50935607"  target="_blank" strategy="BlogCommendFromBaidu_6">
+                        <dd class="clearfix">
+                          <h2 class="">TrustZone初探 （三）</h2>
+                          <div class="summary">
+                              ARM网站上有个trustzone helloworld的例子，据说可以在fast model上模拟运行。我没去试，而是直接拿过来移植到自己的平台上，在u-boot下实现了。
+代码在这：.
+
+...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/2/B/4/3_u011279649.jpg" alt="u011279649" title="u011279649"/></li>
+                              <li class="user_name">u011279649</li>
+                              <li class="time">2016年03月20日 10:59</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>754</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/leoufung/article/details/48781227"  target="_blank" strategy="BlogCommendFromBaidu_7">
+                        <dd class="clearfix">
+                          <h2 class="">TrustZone初探（一）</h2>
+                          <div class="summary">
+                              最近在搞trustzone，把arm的例子程序成功在某Cortex-A9的处理器上跑起来，趁着手热记一些东西。1.Truztzone和已有trust computing比如TPM技术的区别。trust...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/E/2/1/3_leoufung.jpg" alt="leoufung" title="leoufung"/></li>
+                              <li class="user_name">leoufung</li>
+                              <li class="time">2015年09月28日 09:57</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>998</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a href="http://blog.csdn.net/yiyueming/article/details/73187592"  target="_blank" strategy="BlogCommendFromBaidu_8">
+                        <dd class="clearfix">
+                          <h2 class="">Trustzone  硬件架构</h2>
+                          <div class="summary">
+                              1. 用于ARMv8-A / ARMv7-A / ARMv6Z的ARM TrustZone 基本介绍TrustZone技术为全系统的安全性和可信赖平台的创建提供了基础。系统的任何部分都可以设计为安全的...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="http://avatar.csdn.net/8/E/F/3_yiyueming.jpg" alt="yiyueming" title="yiyueming"/></li>
+                              <li class="user_name">yiyueming</li>
+                              <li class="time">2017年06月13日 16:00</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>633</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                      <a class="clearfix" href="http://download.csdn.net/download/geloor/9458316" target="_blank" strategy="BlogCommendFromBaidu_9">
+                        <dd class="floatL">
+                            <div class="summary">
+                                <h2>TrustZone的白皮书以及API文档</h2>
+                                <div class="summary">
+                                    <ul>
+                                        <li class="time">2016年03月11日 10:07</li>
+                                        <li class="visited_num fileSize">876KB</li>
+                                        <li class="download_btn">下载</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </dd>
+                        <dt class="floatR"><img class="maxwidth" src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="" title=""/></dt>
+                      </a>
+                  </dl>
+                                                    <!-- <script async="async" charset="utf-8" src="https://shared.ydstatic.com/js/yatdk/3.0.0/stream.js" data-notify="bannerMulti_notify" data-insert-nodes="yd_a_d_feed_1,yd_a_d_feed_13,yd_a_d_feed_18,yd_a_d_feed_23,yd_a_d_feed_28,yd_a_d_feed_33" data-id="8935aa488dd58452b9e5ee3b44f1212f" data-hide-ad-label="0" data-div-Style="width:100%;padding:16px 35px 16px 10px;" data-img-Style="float:right;width:120px;" data-tit-Style="font-size:20px;font-weight:bold;margin-bottom:10px;font-family: 'PingFang SC', 'Microsoft YaHei', SimHei, Arial, SimSun;" data-des-Style="width:700px;font-size:14px;font-family: 'PingFang SC', 'Microsoft YaHei', SimHei, Arial, SimSun;" > </script> -->
+      
+      </div>
+  </main>
+<aside>
+    <div class="right_box user_info">
+    <dl class="inf_bar clearfix">
+        <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+        <a href="http://blog.csdn.net/guyongqiangx" target="_blank">
+            <img src="http://avatar.csdn.net/7/E/9/3_guyongqiangx.jpg" class="avatar_pic">
+        </a>
+      </dt><dd>
+            <h3 class="csdn-tracking-statistics tracking-click"  data-mod="popu_380"><a href="http://blog.csdn.net/guyongqiangx" target="_blank" id="uid">guyongqiangx</a></h3>
+            <div class="medals" title="">
+                      </div>
+                        <span  class="csdn-tracking-statistics tracking-click" data-mod="popu_379"><a class="btn btn-redborder-small "  id="span_add_follow" target="_self">关注</a></span>
+                    </dd>
+    </dl>
+    <div class="inf_number_box clearfix">
+        <dl title="50">
+            <dt>原创</dt>
+            <dd>50</dd>
+        </dl>
+        <dl title="41">
+            <dt>粉丝</dt>
+            <dd id='fan'>41</dd>
+        </dl>
+        <dl title="42">
+            <dt>喜欢</dt>
+            <dd>42</dd>
+        </dl>
+        <dl title="49">
+          <dt>评论</dt>
+          <dd>49</dd>
+        </dl>
+    </div>
+
+</div>
+<div class="interflow clearfix">
+      <div class="badge gradeAndbadge">
+        <div>
+                                    <img src='http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png' alt='持之以恒'>
+                                            </div>
+    </div>
+      <div class="grade gradeAndbadge gradewidths">
+      <span>等级：</span>
+      <div>
+        <a href="http://blog.csdn.net/home/help.html#level" title="4级,点击查看等级说明" target="_blank">
+          <img class="grade-img" src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog4.png" alt="4级,点击查看等级说明">
+        </a>
+      </div>
+    </div>
+    <div class="gradeAndbadge gradewidths" title="65893">
+        <span>访问量：</span>
+        <span class="num odd-overhidden">65.89k</span>
+    </div>
+
+    <div class="gradeAndbadge gradewidths" title="1154">
+      <span>积分：</span>
+      <span  class="num odd-overhidden">1.15k</span>
+    </div> 
+    <div class="gradeAndbadge gradewidths" title="42024">
+        <span>排名：</span>
+        <span class="num odd-overhidden">42.02k</span>
+    </div>
+
+</div>          <div class="extension_other csdn-tracking-statistics tracking-click" data-mod="popu_389">
+          <!--u3032528-->
+        <div class="flashrecommend">
+            <script type="text/javascript" src="//cee1.iteye.com/bwocoltly.js"></script>
+        </div>
+      </div>
+      <div class="writings">
+    <div class="public_signal clearfix">
+      <h3>他的最新文章</h3>
+      <a href="http://blog.csdn.net/guyongqiangx" target="_blank" class="more"><span>更多文章</span></a>
+    </div>
+      <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/guyongqiangx/article/details/79138382" target="_blank">将Android启动的logcat消息发送到串口</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/guyongqiangx/article/details/79109768" target="_blank">一个统计Android Service的脚本</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/guyongqiangx/article/details/77650362" target="_blank">Android Update Engine分析（一）Makefile</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/guyongqiangx/article/details/77586809" target="_blank">Solaris系统cron服务异常解决记录</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/guyongqiangx/article/details/74989644" target="_blank">Python从二进制文件中提取Exponent和Modulus数据(e, n)并构建公钥</a>
+          </li>
+                </ul>
+  </div>
+            <div class="user-hotArticle sort userSort">
+            <h3>文章分类</h3>
+            <ul class="hotArticle-list userSort-list">
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6180649" class="odd-overhidden floatL">Cython</a>
+                        <div class="read list-left floatR"><span>0篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6333566" class="odd-overhidden floatL">其它</a>
+                        <div class="read list-left floatR"><span>19篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6419055" class="odd-overhidden floatL">RaspberryPi</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6420279" class="odd-overhidden floatL">u-boot</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6451504" class="odd-overhidden floatL">编译错误</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6878353" class="odd-overhidden floatL">运维</a>
+                        <div class="read list-left floatR"><span>5篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6905211" class="odd-overhidden floatL">Android</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/6910326" class="odd-overhidden floatL">随想</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/7006333" class="odd-overhidden floatL">OpenSSL</a>
+                        <div class="read list-left floatR"><span>4篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/7008653" class="odd-overhidden floatL">Python</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/guyongqiangx/article/category/7178596" class="odd-overhidden floatL">安全</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                            </ul>
+            <div class="unfold-btn">
+              <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+            </div>
+        </div>
+    <!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+            <div class="user-hotArticle sort timeSort">
+          <h3>文章存档</h3>
+          <ul class="hotArticle-list timeSort-list">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2018/02" class="odd-overhidden floatL">2018年2月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2018/01" class="odd-overhidden floatL">2018年1月</a>
+                  <div class="read list-left floatR"><span>2篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/09" class="odd-overhidden floatL">2017年9月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/08" class="odd-overhidden floatL">2017年8月</a>
+                  <div class="read list-left floatR"><span>2篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/07" class="odd-overhidden floatL">2017年7月</a>
+                  <div class="read list-left floatR"><span>5篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/06" class="odd-overhidden floatL">2017年6月</a>
+                  <div class="read list-left floatR"><span>4篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/05" class="odd-overhidden floatL">2017年5月</a>
+                  <div class="read list-left floatR"><span>6篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/04" class="odd-overhidden floatL">2017年4月</a>
+                  <div class="read list-left floatR"><span>3篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2017/03" class="odd-overhidden floatL">2017年3月</a>
+                  <div class="read list-left floatR"><span>3篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/12" class="odd-overhidden floatL">2016年12月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/11" class="odd-overhidden floatL">2016年11月</a>
+                  <div class="read list-left floatR"><span>6篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/10" class="odd-overhidden floatL">2016年10月</a>
+                  <div class="read list-left floatR"><span>8篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/09" class="odd-overhidden floatL">2016年9月</a>
+                  <div class="read list-left floatR"><span>5篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/08" class="odd-overhidden floatL">2016年8月</a>
+                  <div class="read list-left floatR"><span>2篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/guyongqiangx/article/month/2016/07" class="odd-overhidden floatL">2016年7月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                      </ul>
+          <div class="unfold-btn">
+            <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+          </div>
+        </div>
+        <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/guyongqiangx/article/details/74930951">为什么RSA公钥每次加密得到的结果都不一样？</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>5787</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/guyongqiangx/article/details/72604355">Android A/B System OTA分析（四）系统的启动和升级</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>4378</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/guyongqiangx/article/details/71334889">Android A/B System OTA分析（一）概览</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>4349</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/guyongqiangx/article/details/72480154">Android A/B System OTA分析（三）主系统和bootloader的通信</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3633</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/guyongqiangx/article/details/71516768">Android A/B System OTA分析（二）系统image的生成</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3226</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+  <div class="fixRight_box" style="height:256px">
+    <div class="fixRight">
+                    <!--u3163270-->
+            <script type="text/javascript" src="//cee1.iteye.com/avneunkwb.js"></script>
+                <div class="persion_article"></div>
+    </div>
+    </div>
+  </div>
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu" id="share_box">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self" title="点赞">
+                <a href="javascript:void(0);" class="iconbox border_red" ><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">2</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics tracking-click" data-mod="popu_372" target="_self" title="目录">
+                <a href="javascript:void(0);" class="iconbox border_black" ><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_374"  id="com-quick-collect" target="_self" title="收藏">
+                <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544" title="评论">
+                <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li class="bdsharebuttonbox">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到新浪微博">
+                <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                <a href="#" class="bds_tsina" data-cmd="tsina" > </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到微信">
+              <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+              <a href="#" class="bds_weixin" data-cmd="weixin" > </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到QQ空间">
+              <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+              <a href="#" class="bds_qzone" data-cmd="qzone" > </a>
+          </button>
+        </li>
+        <li id="share_box">
+            
+            <div class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+                
+                
+                
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover" ></div>
+<div class="pop pop_CA" >
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon"  id="fapancle" ></span>
+    </div>
+    <iframe src="" id="collectIframe" frameborder="0" width="100%" height="360"  scrolling="no" ></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body">
+        <table border="0" cellpadding="0" cellspacing="4" class="pop_table">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/guyongqiangx/article/details/78020257" target="_blank">一篇了解TrustZone</a></td></tr>
+            <tr>
+                <th style="width:60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input type="radio" class="report_type" id="report_sex" name="report_type" value="1">色情</label>
+                    <label><input type="radio" class="report_type" id="report_Politics" name="report_type" value="2">政治</label>
+                    <label><input type="radio" class="report_type" id="report_copy" name="report_type" value="3">抄袭</label>
+                    <label><input type="radio" class="report_type" id="report_ad" name="report_type" value="4">广告</label>
+                    <label><input type="radio" class="report_type" id="report_want" name="report_type" value="5">招聘</label>
+                    <label><input type="radio" class="report_type" id="report_call" name="report_type" value="6">骂人</label>
+                    <br>
+                    <label><input type="radio" class="report_type" id="report_other" name="report_type" value="7">其他</label>
+                    <input type="text" name="report_other_content" id="report_other_content" maxlength="30" style="display: none;">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" type="text" style="width: 90%;">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color:#999;margin:0px;padding:0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" type="image" align="middle" class="btn_1" src="http://csdnimg.cn/release/phoenix/images/btn_submit.jpg">
+                    <span style="padding-left:20px;"></span>
+                    <img id="btnCloseReportDialog" src="http://csdnimg.cn/release/phoenix/images/btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: Red">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    <script language="javascript" type="text/javascript">
+        var isComment=0;
+        //显示隐藏地址
+        $(function () {
+          console.log("version:phoenix");
+            if(isComment){
+                $("#report_description").attr("disabled",true);
+                $("#sp_n").hide();
+                $("#sp_reason").html("评论内容：");
+            }
+            $(".report_type").click(function () {
+                $("#panel_originalurl,#report_other_content").hide();
+                switch ($(this).val()) {
+                    case '3':
+                        $("#panel_originalurl").show();
+                        $("#originalurl").focus();
+                        break;
+                    case '7':
+                        if(isComment){
+                            $("#report_other_content").show().focus();
+                        }
+                        break;
+                }
+
+            });
+
+            $("#frmReport").submit(function () {
+                if (!currentUserName) {
+
+                    if (confirm("您的操作必须登录，是否登录？")) {
+                        location.href = "http://passport.csdn.net/account/login?from=" + encodeURIComponent(location.href);
+                        return false;
+                    }
+                    return false;
+                }
+
+                var reportType = $("input[name=report_type]:checked").val();
+                if(!reportType){
+                    alert("请选择举报原因！");
+                    return false;
+                }
+                var otherInfo = "";
+                switch (reportType) {
+                    case '3':
+                        otherInfo = $("#originalurl").val();
+                        if (otherInfo == ""||otherInfo=="http://") {
+                            alert("举报抄袭必须提供原创文章地址！");
+                            $("#originalurl").focus();
+                            return false;
+                        } else if(!checkeURL(otherInfo)) {
+                            alert("请输入正确的原创文章地址！");
+                            $("#originalurl").focus();
+                            return false;
+                        }
+                        break;
+                    case '7':
+                        otherInfo = $("#report_other_content").val();
+                        if (isComment && !otherInfo) {
+                            alert("请填写举报的具体原因！");
+                            $("#report_other_content").focus();
+                            return false;
+                        }
+                        if(!isComment){
+                            if(!$("#report_description").val()){
+                                alert("请填写举报的具体原因！");
+                                $("#report_description").focus();
+                                return false;
+                            }
+                        }
+                        break;
+                }
+                if(!isComment){
+                    if($("#report_description").val().length>30){
+                        alert("举报原因最多只允许输入30个字！");
+                        return false;
+                    }
+                }
+	            nowTime = {
+		            year: new Date().getFullYear(),
+		            month: parseInt(new Date().getMonth())+1,
+		            day: new Date().getDate(),
+		            hours: parseInt(new Date().getHours())+1,
+		            minutes: parseInt(new Date().getMinutes())+1,
+		            seconds: parseInt(new Date().getSeconds())+1
+	            };
+	            var data = {
+		            articleId: fileName,
+		            commentId: 0,
+		            reportType: reportType,
+		            originalurl: $("#originalurl").val(),
+		            report_other_content: $("#report_other_content").val(),
+		            report_description: $("#report_description").val(),
+		            currentUserName: currentUserName,
+		            updatetime: nowTime.year+'/'+nowTime.month+'/'+nowTime.day+' '+ nowTime.hours+':'+nowTime.minutes+':'+seconds,
+		            blogUser: username
+	            };
+	            if(!isComment){//如果是举报文章
+		            data.report_other_content = data.report_description;
+		            // data.report_description = "1. 神经网络这是一个常见的神经网络的图：这是一个常见的三层神经网络的基本构成，Layer L1是输入层，Layer L2是隐含层";
+	            }
+
+	            $.post(blog_address + "/common/report?id="+fileName+"&t=2", data, function (data) {
+		            if (data.result == 1){
+			            SetError("感谢您的举报，我们会尽快审核！");
+		            }else{
+			            if (data.content) alert(data.content);
+		            }
+
+	            });
+                return false;
+            });
+
+            $("#btnCloseReportDialog").click(function () {
+                CloseDiv();
+            });
+
+        });
+
+        //提示后关闭方法
+        function SetError(error) {
+            $("#btnCloseReportDialog").trigger("click");
+            alert(error);
+            CloseDiv();
+        }
+
+        //关闭方法
+        function CloseDiv() {
+
+            $.removeMask();
+            $("#report_dialog").hide();
+            return false;
+        }
+
+        //验证url
+        function checkeURL(url){
+            return /^http(s)?:\/\/([\w-]+\.)+[\w-]+/i.test(url);
+        }
+    </script>
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    <script id="adJs52b5334"></script>
+    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+</div>
+<script type="text/javascript" src="//static.blog.csdn.net/mdeditor/public/res/bower-libs/MathJax/MathJax.js"></script>
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<script type="text/javascript" >
+    if($(".article_collect li").length==1){$(".article_collect").hide();}
+    if($(".article_tags li").length==1){$(".article_tags").hide();}
+    $(".edit a").attr("href","http://mp.blog.csdn.net/postedit/"+fileName);
+    $.each($(".edu_li a"),function(){$(this).attr("href",$(this).attr("href").replace("blog7","blog9"))});
+    new CNick('#uid').showNickname();
+
+    if($("#fan").html()=="")
+    {
+	    $("#fan").html(0);
+    }
+</script>
+<script src="http://c.csdnimg.cn/public/common/append_mark/appendMark.min.js?v=5.00.43" type="text/javascript"></script>
+<script type="text/javascript">
+    appendMark($('.recommend_list').children('a').find('dt'),$('.extension_other'),$('.yd_a_d_feed_cla'))
+</script>
+<script src='//csdnimg.cn/pubfooter/js/publib_footer-1.0.3.js?v201802051726' data-isfootertrack="false"></script>
+<div class=""id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+</body>
