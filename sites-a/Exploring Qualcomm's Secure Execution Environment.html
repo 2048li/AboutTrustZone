@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html class='v2' dir='ltr'>
+<head>
+<link href='https://www.blogger.com/static/v1/widgets/2437439463-css_bundle_v2.css' rel='stylesheet' type='text/css'/>
+<meta content='width=1100' name='viewport'/>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+<meta content='blogger' name='generator'/>
+<link href='http://bits-please.blogspot.com/favicon.ico' rel='icon' type='image/x-icon'/>
+<link href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html' rel='canonical'/>
+<link rel="alternate" type="application/atom+xml" title="Bits, Please! - Atom" href="http://bits-please.blogspot.com/feeds/posts/default" />
+<link rel="alternate" type="application/rss+xml" title="Bits, Please! - RSS" href="http://bits-please.blogspot.com/feeds/posts/default?alt=rss" />
+<link rel="service.post" type="application/atom+xml" title="Bits, Please! - Atom" href="https://www.blogger.com/feeds/2029700426505953971/posts/default" />
+
+<link rel="alternate" type="application/atom+xml" title="Bits, Please! - Atom" href="http://bits-please.blogspot.com/feeds/7126667581278688733/comments/default" />
+<!--[if IE]><script type="text/javascript" src="https://www.blogger.com/static/v1/jsbin/3061962209-ieretrofit.js"></script>
+<![endif]-->
+<link href='https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png' rel='image_src'/>
+<meta content='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html' property='og:url'/>
+<meta content='Exploring Qualcomm&#39;s Secure Execution Environment' property='og:title'/>
+<meta content='A security blog focusing on Android, the Linux Kernel and everything nice.' property='og:description'/>
+<meta content='https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/w1200-h630-p-k-no-nu/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png' property='og:image'/>
+<!--[if IE]> <script> (function() { var html5 = ("abbr,article,aside,audio,canvas,datalist,details," + "figure,footer,header,hgroup,mark,menu,meter,nav,output," + "progress,section,time,video").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script> <![endif]-->
+<title>Bits, Please!: Exploring Qualcomm's Secure Execution Environment</title>
+<style id='page-skin-1' type='text/css'><!--
+/*-----------------------------------------------
+Blogger Template Style
+Name:     Picture Window
+Designer: Blogger
+URL:      www.blogger.com
+----------------------------------------------- */
+
+/* Content
+----------------------------------------------- */
+body {
+font: normal normal 15px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+color: #333333;
+background: #dddddd url(//themes.googleusercontent.com/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT) repeat-x fixed bottom center;
+}
+html body .region-inner {
+min-width: 0;
+max-width: 100%;
+width: auto;
+}
+.content-outer {
+font-size: 90%;
+}
+a:link {
+text-decoration:none;
+color: #992211;
+}
+a:visited {
+text-decoration:none;
+color: #771100;
+}
+a:hover {
+text-decoration:underline;
+color: #cc4411;
+}
+.content-outer {
+background: transparent url(//www.blogblog.com/1kt/transparent/white80.png) repeat scroll top left;
+-moz-border-radius: 15px;
+-webkit-border-radius: 15px;
+-goog-ms-border-radius: 15px;
+border-radius: 15px;
+-moz-box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+-goog-ms-box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+margin: 30px auto;
+}
+.content-inner {
+padding: 15px;
+}
+/* Header
+----------------------------------------------- */
+.header-outer {
+background: #992211 url(//www.blogblog.com/1kt/transparent/header_gradient_shade.png) repeat-x scroll top left;
+_background-image: none;
+color: #ffffff;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+-goog-ms-border-radius: 10px;
+border-radius: 10px;
+}
+.Header img, .Header #header-inner {
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+-goog-ms-border-radius: 10px;
+border-radius: 10px;
+}
+.header-inner .Header .titlewrapper,
+.header-inner .Header .descriptionwrapper {
+padding-left: 30px;
+padding-right: 30px;
+}
+.Header h1 {
+font: normal normal 36px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+.Header h1 a {
+color: #ffffff;
+}
+.Header .description {
+font-size: 130%;
+}
+/* Tabs
+----------------------------------------------- */
+.tabs-inner {
+margin: .5em 0 0;
+padding: 0;
+}
+.tabs-inner .section {
+margin: 0;
+}
+.tabs-inner .widget ul {
+padding: 0;
+background: #f5f5f5 url(//www.blogblog.com/1kt/transparent/tabs_gradient_shade.png) repeat scroll bottom;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+-goog-ms-border-radius: 10px;
+border-radius: 10px;
+}
+.tabs-inner .widget li {
+border: none;
+}
+.tabs-inner .widget li a {
+display: inline-block;
+padding: .5em 1em;
+margin-right: 0;
+color: #992211;
+font: normal normal 15px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+-moz-border-radius: 0 0 0 0;
+-webkit-border-top-left-radius: 0;
+-webkit-border-top-right-radius: 0;
+-goog-ms-border-radius: 0 0 0 0;
+border-radius: 0 0 0 0;
+background: transparent none no-repeat scroll top left;
+border-right: 1px solid #cccccc;
+}
+.tabs-inner .widget li:first-child a {
+padding-left: 1.25em;
+-moz-border-radius-topleft: 10px;
+-moz-border-radius-bottomleft: 10px;
+-webkit-border-top-left-radius: 10px;
+-webkit-border-bottom-left-radius: 10px;
+-goog-ms-border-top-left-radius: 10px;
+-goog-ms-border-bottom-left-radius: 10px;
+border-top-left-radius: 10px;
+border-bottom-left-radius: 10px;
+}
+.tabs-inner .widget li.selected a,
+.tabs-inner .widget li a:hover {
+position: relative;
+z-index: 1;
+background: #ffffff url(//www.blogblog.com/1kt/transparent/tabs_gradient_shade.png) repeat scroll bottom;
+color: #000000;
+-moz-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-webkit-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-goog-ms-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+}
+/* Headings
+----------------------------------------------- */
+h2 {
+font: bold normal 13px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+text-transform: uppercase;
+color: #666666;
+margin: .5em 0;
+}
+/* Main
+----------------------------------------------- */
+.main-outer {
+background: transparent none repeat scroll top center;
+-moz-border-radius: 0 0 0 0;
+-webkit-border-top-left-radius: 0;
+-webkit-border-top-right-radius: 0;
+-webkit-border-bottom-left-radius: 0;
+-webkit-border-bottom-right-radius: 0;
+-goog-ms-border-radius: 0 0 0 0;
+border-radius: 0 0 0 0;
+-moz-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-webkit-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-goog-ms-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+}
+.main-inner {
+padding: 15px 5px 20px;
+}
+.main-inner .column-center-inner {
+padding: 0 0;
+}
+.main-inner .column-left-inner {
+padding-left: 0;
+}
+.main-inner .column-right-inner {
+padding-right: 0;
+}
+/* Posts
+----------------------------------------------- */
+h3.post-title {
+margin: 0;
+font: normal normal 18px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+}
+.comments h4 {
+margin: 1em 0 0;
+font: normal normal 18px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+}
+.date-header span {
+color: #333333;
+}
+.post-outer {
+background-color: #ffffff;
+border: solid 1px #dddddd;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+-goog-ms-border-radius: 10px;
+padding: 15px 20px;
+margin: 0 -20px 20px;
+}
+.post-body {
+line-height: 1.4;
+font-size: 110%;
+position: relative;
+}
+.post-header {
+margin: 0 0 1.5em;
+color: #999999;
+line-height: 1.6;
+}
+.post-footer {
+margin: .5em 0 0;
+color: #999999;
+line-height: 1.6;
+}
+#blog-pager {
+font-size: 140%
+}
+#comments .comment-author {
+padding-top: 1.5em;
+border-top: dashed 1px #ccc;
+border-top: dashed 1px rgba(128, 128, 128, .5);
+background-position: 0 1.5em;
+}
+#comments .comment-author:first-child {
+padding-top: 0;
+border-top: none;
+}
+.avatar-image-container {
+margin: .2em 0 0;
+}
+/* Comments
+----------------------------------------------- */
+.comments .comments-content .icon.blog-author {
+background-repeat: no-repeat;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAd0SU1FB9sLFwMeCjjhcOMAAAD+SURBVDjLtZSvTgNBEIe/WRRnm3U8RC1neQdsm1zSBIU9VVF1FkUguQQsD9ITmD7ECZIJSE4OZo9stoVjC/zc7ky+zH9hXwVwDpTAWWLrgS3QAe8AZgaAJI5zYAmc8r0G4AHYHQKVwII8PZrZFsBFkeRCABYiMh9BRUhnSkPTNCtVXYXURi1FpBDgArj8QU1eVXUzfnjv7yP7kwu1mYrkWlU33vs1QNu2qU8pwN0UpKoqokjWwCztrMuBhEhmh8bD5UDqur75asbcX0BGUB9/HAMB+r32hznJgXy2v0sGLBcyAJ1EK3LFcbo1s91JeLwAbwGYu7TP/3ZGfnXYPgAVNngtqatUNgAAAABJRU5ErkJggg==);
+}
+.comments .comments-content .loadmore a {
+border-top: 1px solid #cc4411;
+border-bottom: 1px solid #cc4411;
+}
+.comments .continue {
+border-top: 2px solid #cc4411;
+}
+/* Widgets
+----------------------------------------------- */
+.widget ul, .widget #ArchiveList ul.flat {
+padding: 0;
+list-style: none;
+}
+.widget ul li, .widget #ArchiveList ul.flat li {
+border-top: dashed 1px #ccc;
+border-top: dashed 1px rgba(128, 128, 128, .5);
+}
+.widget ul li:first-child, .widget #ArchiveList ul.flat li:first-child {
+border-top: none;
+}
+.widget .post-body ul {
+list-style: disc;
+}
+.widget .post-body ul li {
+border: none;
+}
+/* Footer
+----------------------------------------------- */
+.footer-outer {
+color:#eeeeee;
+background: transparent url(https://resources.blogblog.com/blogblog/data/1kt/transparent/black50.png) repeat scroll top left;
+-moz-border-radius: 10px 10px 10px 10px;
+-webkit-border-top-left-radius: 10px;
+-webkit-border-top-right-radius: 10px;
+-webkit-border-bottom-left-radius: 10px;
+-webkit-border-bottom-right-radius: 10px;
+-goog-ms-border-radius: 10px 10px 10px 10px;
+border-radius: 10px 10px 10px 10px;
+-moz-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-webkit-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+-goog-ms-box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+box-shadow: 0 0 0 rgba(0, 0, 0, .15);
+}
+.footer-inner {
+padding: 10px 5px 20px;
+}
+.footer-outer a {
+color: #ffffdd;
+}
+.footer-outer a:visited {
+color: #cccc99;
+}
+.footer-outer a:hover {
+color: #ffffff;
+}
+.footer-outer .widget h2 {
+color: #bbbbbb;
+}
+/* Mobile
+----------------------------------------------- */
+html body.mobile {
+height: auto;
+}
+html body.mobile {
+min-height: 480px;
+background-size: 100% auto;
+}
+.mobile .body-fauxcolumn-outer {
+background: transparent none repeat scroll top left;
+}
+html .mobile .mobile-date-outer, html .mobile .blog-pager {
+border-bottom: none;
+background: transparent none repeat scroll top center;
+margin-bottom: 10px;
+}
+.mobile .date-outer {
+background: transparent none repeat scroll top center;
+}
+.mobile .header-outer, .mobile .main-outer,
+.mobile .post-outer, .mobile .footer-outer {
+-moz-border-radius: 0;
+-webkit-border-radius: 0;
+-goog-ms-border-radius: 0;
+border-radius: 0;
+}
+.mobile .content-outer,
+.mobile .main-outer,
+.mobile .post-outer {
+background: inherit;
+border: none;
+}
+.mobile .content-outer {
+font-size: 100%;
+}
+.mobile-link-button {
+background-color: #992211;
+}
+.mobile-link-button a:link, .mobile-link-button a:visited {
+color: #ffffff;
+}
+.mobile-index-contents {
+color: #333333;
+}
+.mobile .tabs-inner .PageList .widget-content {
+background: #ffffff url(//www.blogblog.com/1kt/transparent/tabs_gradient_shade.png) repeat scroll bottom;
+color: #000000;
+}
+.mobile .tabs-inner .PageList .widget-content .pagelist-arrow {
+border-left: 1px solid #cccccc;
+}
+
+--></style>
+<style id='template-skin-1' type='text/css'><!--
+body {
+min-width: 1020px;
+}
+.content-outer, .content-fauxcolumn-outer, .region-inner {
+min-width: 1020px;
+max-width: 1020px;
+_width: 1020px;
+}
+.main-inner .columns {
+padding-left: 0px;
+padding-right: 0px;
+}
+.main-inner .fauxcolumn-center-outer {
+left: 0px;
+right: 0px;
+/* IE6 does not respect left and right together */
+_width: expression(this.parentNode.offsetWidth -
+parseInt("0px") -
+parseInt("0px") + 'px');
+}
+.main-inner .fauxcolumn-left-outer {
+width: 0px;
+}
+.main-inner .fauxcolumn-right-outer {
+width: 0px;
+}
+.main-inner .column-left-outer {
+width: 0px;
+right: 100%;
+margin-left: -0px;
+}
+.main-inner .column-right-outer {
+width: 0px;
+margin-right: -0px;
+}
+#layout {
+min-width: 0;
+}
+#layout .content-outer {
+min-width: 0;
+width: 800px;
+}
+#layout .region-inner {
+min-width: 0;
+width: auto;
+}
+body#layout div.add_widget {
+padding: 8px;
+}
+body#layout div.add_widget a {
+margin-left: 32px;
+}
+--></style>
+<style>
+    body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT);}
+    
+@media (max-width: 200px) { body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT&options=w200);}}
+@media (max-width: 400px) and (min-width: 201px) { body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT&options=w400);}}
+@media (max-width: 800px) and (min-width: 401px) { body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT&options=w800);}}
+@media (max-width: 1200px) and (min-width: 801px) { body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT&options=w1200);}}
+/* Last tag covers anything over one higher than the previous max-size cap. */
+@media (min-width: 1201px) { body {background-image:url(\/\/themes.googleusercontent.com\/image?id=1fupio4xM9eVxyr-k5QC5RiCJlYR35r9dXsp63RKsKt64v33poi2MvnjkX_1MULBY8BsT&options=w1600);}}
+  </style>
+<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=2029700426505953971&amp;zx=4dba4df4-0d84-41de-82dd-c8936857bf2f' media='none' onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=2029700426505953971&amp;zx=4dba4df4-0d84-41de-82dd-c8936857bf2f' rel='stylesheet'/></noscript>
+</head>
+<body class='loading variant-shade'>
+<div class='navbar section' id='navbar' name='Navbar'><div class='widget Navbar' data-version='1' id='Navbar1'><script type="text/javascript">
+    function setAttributeOnload(object, attribute, val) {
+      if(window.addEventListener) {
+        window.addEventListener('load',
+          function(){ object[attribute] = val; }, false);
+      } else {
+        window.attachEvent('onload', function(){ object[attribute] = val; });
+      }
+    }
+  </script>
+<div id="navbar-iframe-container"></div>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<script type="text/javascript">
+      gapi.load("gapi.iframes:gapi.iframes.style.bubble", function() {
+        if (gapi.iframes && gapi.iframes.getContext) {
+          gapi.iframes.getContext().openChild({
+              url: 'https://www.blogger.com/navbar.g?targetBlogID\x3d2029700426505953971\x26blogName\x3dBits,+Please!\x26publishMode\x3dPUBLISH_MODE_BLOGSPOT\x26navbarType\x3dLIGHT\x26layoutType\x3dLAYOUTS\x26searchRoot\x3dhttp://bits-please.blogspot.com/search\x26blogLocale\x3den_GB\x26v\x3d2\x26homepageUrl\x3dhttp://bits-please.blogspot.com/\x26targetPostID\x3d7126667581278688733\x26blogPostOrPageUrl\x3dhttp://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html\x26vt\x3d1902986872958361202',
+              where: document.getElementById("navbar-iframe-container"),
+              id: "navbar-iframe"
+          });
+        }
+      });
+    </script><script type="text/javascript">
+(function() {
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.src = '//pagead2.googlesyndication.com/pagead/js/google_top_exp.js';
+var head = document.getElementsByTagName('head')[0];
+if (head) {
+head.appendChild(script);
+}})();
+</script>
+</div></div>
+<div class='body-fauxcolumns'>
+<div class='fauxcolumn-outer body-fauxcolumn-outer'>
+<div class='cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left'>
+<div class='fauxborder-right'></div>
+<div class='fauxcolumn-inner'>
+</div>
+</div>
+<div class='cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+</div>
+<div class='content'>
+<div class='content-fauxcolumns'>
+<div class='fauxcolumn-outer content-fauxcolumn-outer'>
+<div class='cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left'>
+<div class='fauxborder-right'></div>
+<div class='fauxcolumn-inner'>
+</div>
+</div>
+<div class='cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+</div>
+<div class='content-outer'>
+<div class='content-cap-top cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left content-fauxborder-left'>
+<div class='fauxborder-right content-fauxborder-right'></div>
+<div class='content-inner'>
+<header>
+<div class='header-outer'>
+<div class='header-cap-top cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left header-fauxborder-left'>
+<div class='fauxborder-right header-fauxborder-right'></div>
+<div class='region-inner header-inner'>
+<div class='header section' id='header' name='Header'><div class='widget Header' data-version='1' id='Header1'>
+<div id='header-inner'>
+<div class='titlewrapper'>
+<h1 class='title'>
+<a href='http://bits-please.blogspot.com/'>
+Bits, Please!
+</a>
+</h1>
+</div>
+<div class='descriptionwrapper'>
+<p class='description'><span>
+</span></p>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+<div class='header-cap-bottom cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+</header>
+<div class='tabs-outer'>
+<div class='tabs-cap-top cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left tabs-fauxborder-left'>
+<div class='fauxborder-right tabs-fauxborder-right'></div>
+<div class='region-inner tabs-inner'>
+<div class='tabs no-items section' id='crosscol' name='Cross-column'></div>
+<div class='tabs no-items section' id='crosscol-overflow' name='Cross-Column 2'></div>
+</div>
+</div>
+<div class='tabs-cap-bottom cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+<div class='main-outer'>
+<div class='main-cap-top cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left main-fauxborder-left'>
+<div class='fauxborder-right main-fauxborder-right'></div>
+<div class='region-inner main-inner'>
+<div class='columns fauxcolumns'>
+<div class='fauxcolumn-outer fauxcolumn-center-outer'>
+<div class='cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left'>
+<div class='fauxborder-right'></div>
+<div class='fauxcolumn-inner'>
+</div>
+</div>
+<div class='cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+<div class='fauxcolumn-outer fauxcolumn-left-outer'>
+<div class='cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left'>
+<div class='fauxborder-right'></div>
+<div class='fauxcolumn-inner'>
+</div>
+</div>
+<div class='cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+<div class='fauxcolumn-outer fauxcolumn-right-outer'>
+<div class='cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left'>
+<div class='fauxborder-right'></div>
+<div class='fauxcolumn-inner'>
+</div>
+</div>
+<div class='cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+<!-- corrects IE6 width calculation -->
+<div class='columns-inner'>
+<div class='column-center-outer'>
+<div class='column-center-inner'>
+<div class='main section' id='main' name='Main'><div class='widget Blog' data-version='1' id='Blog1'>
+<div class='blog-posts hfeed'>
+
+          <div class="date-outer">
+        
+<h2 class='date-header'><span>26/04/2016</span></h2>
+
+          <div class="date-posts">
+        
+<div class='post-outer'>
+<div class='post hentry uncustomized-post-template' itemprop='blogPost' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
+<meta content='https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png' itemprop='image_url'/>
+<meta content='2029700426505953971' itemprop='blogId'/>
+<meta content='7126667581278688733' itemprop='postId'/>
+<a name='7126667581278688733'></a>
+<h3 class='post-title entry-title' itemprop='name'>
+Exploring Qualcomm's Secure Execution Environment
+</h3>
+<div class='post-header'>
+<div class='post-header-line-1'></div>
+</div>
+<div class='post-body entry-content' id='post-body-7126667581278688733' itemprop='description articleBody'>
+Welcome to a new series of blog posts!<br />
+<br />
+In this series, we'll dive once more into the world of TrustZone, and explore a new chain of vulnerabilities and corresponding exploits which will allow us to elevate privileges from zero permissions to code execution in the TrustZone kernel.<br />
+<br />
+This may sound familiar to those of you who have <a href="http://bits-please.blogspot.com/2016/01/android-privilege-escalation-to.html">read</a> <a href="http://bits-please.blogspot.com/2015/08/android-linux-kernel-privilege.html">the</a> <a href="http://bits-please.blogspot.com/2015/08/exploring-qualcomms-trustzone.html">previous</a> <a href="http://bits-please.blogspot.com/2015/08/full-trustzone-exploit-for-msm8974.html">series</a> - but let me reassure you; this series will be much more exciting!<br />
+<br />
+First of all, this exploit chain features a privilege escalation which is universal across all Android versions and phones (and which requires zero permissions) and a TrustZone exploit which affects a very wide variety of devices. Secondly, we will dive deep into an as-of-yet unexplored operating system - QSEE - Qualcomm's Secure Execution Environment. Lastly, we'll see some interesting TrustZone payloads, such as directly extracting a real fingerprint from TrustZone's encrypted file-system.<br />
+<br />
+In case you would like to follow along with the symbols and 
+disassembled binaries, I will be using my own Nexus 6 throughout this 
+series, with the following fingerprint:<br />
+<ul><i><u>google/shamu/shamu:5.1.1/LMY48M/2167285:user/release-keys</u></i><i><u>&nbsp;</u></i></ul>
+<br />
+You can find the exact factory image <a href="https://dl.google.com/dl/android/aosp/shamu-lmy48m-factory-336efdae.tgz">here</a>.<br />
+<h2>
+</h2>
+<h2>
+&nbsp;<a name='more'></a></h2>
+<h2>
+&nbsp;</h2>
+<h2>
+Oh say can QSEE </h2>
+<br />
+In this blog post, we'll explore <b>Q</b>ualcomm's <b>S</b>ecure <b>E</b>xecution <b>E</b>nvironment (QSEE).<br />
+<br />
+<a href="http://bits-please.blogspot.com/2015/03/getting-arbitrary-code-execution-in.html">As we've previously discussed</a>, one of the main reasons for the inclusion of TrustZone on devices is the ability to provide a "Trusted Execution Environment" (TEE) - an environment which should theoretically allow computation which cannot be interfered with from the regular operating system, and is therefore "trusted".<br />
+<br />
+This is achieved by creating a small operating system which operates solely in the "Secure World" facilitated by TrustZone. This operating system provides a small number of services directly in the form of system calls which are handled by the TrustZone kernel (TZBSP) itself. However, in order to allow for an extensible model where "trusted" functionality can be added, the TrustZone kernel can also securely load and execute small programs called "Trustlets", which are meant to provide a secure service to the insecure ("Normal World") operating system (in our case, Android).<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-cWVFiYV43Yo/Vx5qWe9aZZI/AAAAAAAADlM/8BZIcwlqxEUAI-aYoGFHTMKDLqXYwtvhACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A04%253A40.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-EWkStHvzQt0/Vw-j7imXi9I/AAAAAAAADiE/P7LPJx_gG60QflJ7xmyyuSxQHbr4dTtZACLcB/s1600/qsee_tzbsp.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+<br />
+There are several such Trustlets commonly used on devices:<br />
+<ul>
+<li>keymaster - Implements the key management API provided by the Android "keystore" daemon. It can securely generate and store cryptographic keys and allow the users to operate on data using these keys.</li>
+<li>widevine - Implementation of <a href="https://www.widevine.com/wv_drm.html">Widevine DRM</a>, which allows "secure" playback of media on the device.</li>
+</ul>
+In fact, there are many more DRM related trustlets, depending on the OEM and the device, but these two trustlets are universally used.<br />
+<br />
+<h2>
+Where do we start?</h2>
+<br />
+Naturally, one place to start would be to look at a trustlet of our choice, and to try and understand what makes it tick. Since the "widevine" module is one of the most ubiquitous, we'll focus on it.<br />
+<br />
+Searching briefly for the widevine trustlet itself in the device's firmware reveals the following:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-K-p4I-gLUm0/Vw-p2N5S4cI/AAAAAAAADiU/AAIWhjl0DZEQPmlO7Wcetm4ewud6GoDygCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B17%253A31%253A36.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-K-p4I-gLUm0/Vw-p2N5S4cI/AAAAAAAADiU/AAIWhjl0DZEQPmlO7Wcetm4ewud6GoDygCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B17%253A31%253A36.png" /></a></div>
+<br />
+Apparently the trustlet is split into a few different files... Opening the files reveals a jumbled up mess - some files contain what looks like code, others contain ELF headers and metadata. In any case, before we can start disassembling the trustlet, we need to make some sense out of this format. We can either do this by opening each of the files and guessing the meaning of each blob, or by following the code-paths responsible for loading the trustlet - let's try a little of both.<br />
+<br />
+<h2>
+Loading a Trustlet</h2>
+<br />
+In order to load a trustlet from the "Normal World", applications can use the libQSEECom.so shared object, which exports the function "<a href="http://androidxref.com/5.1.1_r6/xref/hardware/qcom/keymaster/QSEEComAPI.h">QSEECom_start_app</a>":<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-2M0MBoxXx0s/Vw_i5H1ubYI/AAAAAAAADis/0mjja9u7fLUoSTDCqv-AQF_MqC0fNt1lQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B21%253A35%253A02.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-2M0MBoxXx0s/Vw_i5H1ubYI/AAAAAAAADis/0mjja9u7fLUoSTDCqv-AQF_MqC0fNt1lQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B21%253A35%253A02.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-u7DnEgIHZLs/Vw_ittedyrI/AAAAAAAADio/13gvByqwpTEXj-t8-J6jqL0njcju8XBgQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B21%253A33%253A54.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+Unfortunately this library's source code is not available, so we'll have to reverse engineer the function's implementation to find out what it does. Doing so reveals that it performs the following operations:<br />
+<ul>
+<li>Opens the /dev/qseecom device and calls some ioctls to configure it</li>
+<li>Opens the ".mdt" file associated with the trustlet and reads the first 0x34 bytes from it</li>
+<li>Calculates the number of ".bXX" files using the 0x34 bytes from the ".mdt"</li>
+<li>Allocates a physically continuous buffer (using <a href="https://lwn.net/Articles/480055/">"ion"</a>) and copies the ".mdt" and ".bXX" files into it</li>
+<li>Finally, calls a ioctl to load the trustlet itself, using the allocated buffer</li>
+</ul>
+So, still no luck on exactly how the images are loaded, but we're getting there.<br />
+<br />
+First of all, the number 0x34 might look familiar - this is the size of a (32 bit) ELF header. Opening the MDT file reveals that the first 0x34 bytes are indeed a valid ELF header:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-q5ISujqlZJQ/Vw_xqodDwHI/AAAAAAAADjE/5UsNb3fRqHYcpwww3yoU6D00zVhwPzPdQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-14%2B22%253A38%253A03.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="409" src="https://2.bp.blogspot.com/-q5ISujqlZJQ/Vw_xqodDwHI/AAAAAAAADjE/5UsNb3fRqHYcpwww3yoU6D00zVhwPzPdQCLcB/s640/Screenshot%2Bfrom%2B2016-04-14%2B22%253A38%253A03.png" width="640" /></a></div>
+<br />
+Moreover, the "QSEECOM_start_app" function we just had a look at used the word at offset 0x2C in order to calculate the number of ".bXX" files. As you can see above, this corresponds to the "e_phnum" field in the ELF header.<br />
+<br />
+Since the "e_phnum" field is usually used to specify the number of program headers, this hints that perhaps each of the ".bXX" files contains single segment of the trustlet. Indeed, opening each of the files reveals content the seems like it may be a segment of the program being loaded... But in order to make sure, we'll need to find the program headers themselves (and see if they match the ".bXX" files).<br />
+<br />
+Looking further, the next few chunks in the ".mdt" file are in fact the program headers themselves, one for each of the ".bXX" files present.<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-kCbanj5qnNI/VxoYC9hWc_I/AAAAAAAADkU/gwOYLG--NhgkHg0eo_F0ytxTkHulrBUfQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-22%2B15%253A24%253A28.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-kCbanj5qnNI/VxoYC9hWc_I/AAAAAAAADkU/gwOYLG--NhgkHg0eo_F0ytxTkHulrBUfQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-22%2B15%253A24%253A28.png" /></a></div>
+<br />
+And, confirming our earlier suspicion, their sizes match the sizes of the ".bXX" files exactly. Great!<br />
+<br />
+Note that the first two program headers above look a little strange - they are both NULL-type headers, meaning they are "reserved" and should not be loaded into the resulting ELF image. Strangely, opening the corresponding ".bXX" files reveals that the first block contains the same ELF header and program headers present in the ".mdt", and the second block contains the rest of the ".mdt" file.<br />
+<br />
+In any case, here's a short schematic summing up what we know so far:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-ng-lbPKtFqs/Vx6N8HqOBNI/AAAAAAAADmk/I-JQCN-w6i4vW1RoAyi7UR6PdD50PL08gCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B00%253A36%253A37.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="363" src="https://3.bp.blogspot.com/-ng-lbPKtFqs/Vx6N8HqOBNI/AAAAAAAADmk/I-JQCN-w6i4vW1RoAyi7UR6PdD50PL08gCLcB/s400/Screenshot%2Bfrom%2B2016-04-26%2B00%253A36%253A37.png" width="400" /></a></div>
+<br />
+<br />
+Also, note that since the ELF header and the program headers are all present in the ".mdt", we can use "readelf" in order to quickly dump the information about program headers in the trustlet:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-xz-y61aweD8/VxoYvWqHxjI/AAAAAAAADkc/KMID90TBNsQkEEDTFC0Yz315VFbkqeUfgCLcB/s1600/Screenshot%2Bfrom%2B2016-04-22%2B15%253A26%253A11.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-xz-y61aweD8/VxoYvWqHxjI/AAAAAAAADkc/KMID90TBNsQkEEDTFC0Yz315VFbkqeUfgCLcB/s1600/Screenshot%2Bfrom%2B2016-04-22%2B15%253A26%253A11.png" /></a></div>
+<br />
+<br />
+<br />
+At this point we have all the information we need in order to create a complete and valid ELF file from the ".mdt" and ".bXX" files; we have the ELF header and the program headers, as well as each of the segments themselves. We just need to write a small script that will create an ELF file using this data.<br />
+<br />
+I've written a small python script which does just that. You can find it here:<br />
+<br />
+<a href="https://github.com/laginimaineb/unify_trustlet">https://github.com/laginimaineb/unify_trustlet</a><br />
+<br />
+<h2>
+Reflections on Trusting Trustlets</h2>
+<h2>
+&nbsp;</h2>
+By now have a basic understanding of how trustlets are assembled into an executable file, but we still don't know how they are verified. However, since we know the ".bXX" files contain <u>only</u> the segments to be loaded, this means that this data must reside in the ".mdt" file. <br />
+<br />
+So it's time for some guesswork - if we were to build a trusted loader, how would we do it?<br />
+<br />
+One very common paradigm would be to use hash-and-sign (relying on a <a href="https://en.wikipedia.org/wiki/Collision_resistance">CRHF</a> and a <a href="https://en.wikipedia.org/wiki/Digital_signature">digital signature</a>). Essentially - we calculate the hash of the data to be authenticated and sign it using a private key for which a corresponding public key is known to the loader.<br />
+<br />
+If that were the case, we'd expect to find two things in the ".mdt":<br />
+<ul>
+<li>A certificate chain</li>
+<li>A signature blob</li>
+</ul>
+Let's start by looking for a certificate chain. There are <a href="https://blogs.msdn.microsoft.com/kaushal/2010/11/04/various-ssltls-certificate-file-typesextensions/">way too many</a><a href="https://www.blogger.com/null"> </a>formats for certificates, but since the ".mdt" file only contains binary data, we can assume it'll probably be a binary format, the most common of which is <a href="https://en.wikipedia.org/wiki/X.690#DER_encoding">DER</a>.<br />
+<br />
+There's a quick hack we can use to find DER encoded certificates - they almost always start with an "ASN.1 SEQUENCE" blob, which is encoded as: 0x30 0x82. So let's search for these two bytes in the ".mdt" and save each found blob into a file. Now, we can check if these blobs are well-formed certificates using "openssl": <br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-sDFBSQziyeU/Vx55nxH0evI/AAAAAAAADlk/T2rZKFv5qAY9nt8xoPBugmZA5qU4RnT4ACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A08%253A18.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-sDFBSQziyeU/Vx55nxH0evI/AAAAAAAADlk/T2rZKFv5qAY9nt8xoPBugmZA5qU4RnT4ACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A08%253A18.png" /></a></div>
+<br />
+Yup, we guessed correctly - those are certificates.<br />
+<br />
+In fact, the trustlet contains three certificates, one after the other. Just for good measure, we might also want to check that these three certificates are in fact a certificate chain which forms a valid chain of trust. We can do this by dumping the certificates to a single "certificate chain" file and using "openssl" to verify each certificate using this chain:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-6EU5u0TlGNQ/Vx59xMP3d-I/AAAAAAAADl0/LuQKalEin2Uf51FbXHwM40NZ7hGCzFVIgCLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A27%253A38.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-6EU5u0TlGNQ/Vx59xMP3d-I/AAAAAAAADl0/LuQKalEin2Uf51FbXHwM40NZ7hGCzFVIgCLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A27%253A38.png" /></a></div>
+<br />
+As for the root of trust of this chain - looking at the root certificate in the chain reveals the same root certificate which is used to verify all other parts of the boot chain in Qualcomm's "Secure Boot" process. There has been some research about this mechanism, which has shown that the validation occurs by comparing the SHA256 of the root certificate to a special value called "OEM_PK_HASH", which is "fused" into the devices QFuses during the production process. Since this value should theoretically not be modifiable after the production of the device, this means that forging such a root certificate would essentially require a second pre-image attack against SHA256.<br />
+<br />
+Now, let's get back to the ".mdt" - we've found the certificate chain, so now it's time to look for a signature. Normally, the private key is used to produce a signature and the public key can be used to recover the signed data. Since we have the public key of the top-most certificate in the chain, we can use it to go over the file and opportunistically try to "recover" each blob.<br />
+<br />
+But how will we know when we've succeeded?<br />
+<br />
+Recall that RSA is a trapdoor permutation family - every blob with the same number of bits as the public modulus N is mapped to another blob of the same size. <br />
+<br />
+However, while the RSA public modulus in our case is 2048 bits long, most hashes are <u>much</u> shorter than that (160 bits for SHA1, 256 bits for SHA256). This means that if we try to "decrypt" a blob using our public key and it happens to end with a lot of "slack" space (for example, zero bytes), there's a very good chance that this is the signature we're looking for (for a completely random permutation, the chance of <i>n</i> consecutive zero bits is <i>2^-n</i> - extremely small for even a moderate <i>n</i>)<br />
+<br />
+In order to do so, I wrote a small program which loads the public key from the top-most certificate in the chain and tries to "recover" each blob in the ".mdt" (using <a href="https://www.openssl.org/docs/manmaster/crypto/RSA_private_encrypt.html">rsa_public_decrypt</a> with PKCS #1 v1.5 padding). If the "recovered" blob ends with a bunch of zero bytes, the program outputs it. So... Running it on our ".mdt":<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-cInoo8hdisg/Vx6FDn10xMI/AAAAAAAADmI/nfEtOGDr3d4O6jjAURpJUPi4t9PMxHfYwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A58%253A43.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-cInoo8hdisg/Vx6FDn10xMI/AAAAAAAADmI/nfEtOGDr3d4O6jjAURpJUPi4t9PMxHfYwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B23%253A58%253A43.png" /></a></div>
+<br />
+We've found a signature! Great.<br />
+<br />
+What's more, this signature is 256 bits long, which implies that it may be a SHA256 hash... And if there's one SHA256 in the ".mdt", perhaps there are more? <br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-krFw0Ds87PM/Vx6gn52cZwI/AAAAAAAADnM/bcXuiNpiPk4fIFF5LZUeAXso9maJpi5XQCLcB/s1600/hashes.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-krFw0Ds87PM/Vx6gn52cZwI/AAAAAAAADnM/bcXuiNpiPk4fIFF5LZUeAXso9maJpi5XQCLcB/s1600/hashes.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-TZ0tZzKklPU/Vx6HtQ3mP4I/AAAAAAAADmU/AxRCKFir2rArFPRvc1OXi-i4aFjNWZfDACLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B00%253A09%253A10.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+<br />
+Lucky once again!<br />
+<br />
+As we can see, the SHA256 hashes for each of the ".bXX" files are also stored in the ".mdt", consecutively. We can also make an educated guess that this will be the data (or at least some of the data) that is signed to produce the signature we found earlier.<br />
+<br />
+Note that the ".b01" file's hash is missing - why is that? Remember that the ".b01" file contains all the data in the ".mdt" other than the ELF header and program headers. Since this data also contains the signature above, and the signature is (possibly) produced over the hashes of the block files, this would cause a circular dependency (since changing the block file would change the hash, which would change the signature, which would again change the block file, etc.). So it makes sense that this block's hash wouldn't be present.<br />
+<br />
+By now we've actually decoded all of the data in the ".mdt" file apart from a small structure which resides right after the program headers. However, after looking at it for a while, we can see that it simply contains pointers and lengths of the various parts of the ".mdt" that we've already decoded:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-1Q5f2Bdlqek/Vx6fnRC2-JI/AAAAAAAADnA/aiz2tmb2f2IhCXGLPvbN9VeUNhBsbsD8QCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B01%253A51%253A37.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-1Q5f2Bdlqek/Vx6fnRC2-JI/AAAAAAAADnA/aiz2tmb2f2IhCXGLPvbN9VeUNhBsbsD8QCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B01%253A51%253A37.png" /></a></div>
+<br />
+So finally, we've decoded all of the information in the ".mdt"... Phew. <br />
+<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-F25AwpsXJ4w/Vx6gAZPr5nI/AAAAAAAADnE/JjZ_H5OGObA-mCsB9l-_myEE6C2UtkcvwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B01%253A53%253A44.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="https://4.bp.blogspot.com/-F25AwpsXJ4w/Vx6gAZPr5nI/AAAAAAAADnE/JjZ_H5OGObA-mCsB9l-_myEE6C2UtkcvwCLcB/s400/Screenshot%2Bfrom%2B2016-04-26%2B01%253A53%253A44.png" width="383" /></a></div>
+<h2>
+Motorola's High Assurance Boot</h2>
+<br />
+Although the ".mdt" file format we've seen above is universal for all OEMs, Motorola decided to add a little twist.<br />
+<br />
+Instead of supplying an RSA signature like the one we saw earlier, they actually leave the signature blob empty (in fact, the signature I showed you earlier was from a Nexus 5). In fact, Motorola's signature looks like this:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-e4OtA8tpg-8/Vx6iL72LYuI/AAAAAAAADnc/5SJpBjFerDA2VlMYwxuwfvoxIpltOF1hwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B02%253A03%253A02.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-e4OtA8tpg-8/Vx6iL72LYuI/AAAAAAAADnc/5SJpBjFerDA2VlMYwxuwfvoxIpltOF1hwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B02%253A03%253A02.png" /></a></div>
+<br />
+So how is the image verified? <br />
+<br />
+This is done by using a mechanism which Motorola calls HAB ("<b>H</b>igh <b>A</b>ssurance <b>B</b>oot"). This mechanism allows them to verify the ".mdt" file by appending a certificate chain and a signature over the whole ".mdt" to the end of the file, encoded using a proprietary format used by "HAB":<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-9zGaac0jPhc/Vx8cXryW4XI/AAAAAAAADn4/H4kTTh6xyMUKObt9uEWO7Wlk4Z8J6atLwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B10%253A44%253A16.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-9zGaac0jPhc/Vx8cXryW4XI/AAAAAAAADn4/H4kTTh6xyMUKObt9uEWO7Wlk4Z8J6atLwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B10%253A44%253A16.png" /></a></div>
+<br />
+For more information about this mechanism, you can check out this <a href="http://iknowu.duckdns.org/files/public/Qualcomm-Secure-Boot/Qualcomm-Secure-Boot.htm">great research by Tal Aloni</a>. In short, the ".mdt" is hashed and signed using the top-most key in the certificate chain, while the root certificate in the chain is verified using a "Super Root Key", which is hard-coded in one of the bootloader's stages. <br />
+<h2>
+&nbsp;</h2>
+<h2>
+Life of a Trustlet</h2>
+<h2>
+</h2>
+After the verification process we saw above, the TrustZone kernel loads the trustlet's segments into a secure memory region ("secapp-region") which is inaccessible from the "Normal World" and assigns an ID to it.<br />
+<br />
+Then, the kernel switches into "Secure World" user-mode and executes the trustlet's entry function:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-ZjZwBYYkgwM/Vx9GZMOCgII/AAAAAAAADok/vMI6_Xjy1JAr8UGY3TpvS0eylnEk1PC8QCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A43%253A38.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-ZjZwBYYkgwM/Vx9GZMOCgII/AAAAAAAADok/vMI6_Xjy1JAr8UGY3TpvS0eylnEk1PC8QCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A43%253A38.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-4fvmffs9CV0/Vx9EDhNBBzI/AAAAAAAADoY/xWMwWdVwJvAhMvM5FRK5u89KD5fV0V7CACLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A33%253A39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-el60XQ5wqxI/Vx9DgiRv2XI/AAAAAAAADoQ/6finLNMpXgs0qNm5HHsI_QzV_MIRaAwHwCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A31%253A18.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><br /></a></div>
+As you can see, the trustlet registers itself with the TrustZone kernel, along with a "handler function". After registering the trustlet, control is returned to the TrustZone kernel, and the loading process finishes.<br />
+<br />
+Now, once the trustlet is loaded, the "Normal World" can send commands to the trustlet by issuing a special SCM call (called "QSEOS_CLIENT_SEND_DATA_COMMAND") containing the loaded trustlet's ID and the request and response buffers. Here's what it looks like:<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-bQG0yqPbGe8/Vx9J-HZKjSI/AAAAAAAADow/XrU2FHfdiAUggbxdNZU9B1L-0PvEK77NQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A58%253A50.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-bQG0yqPbGe8/Vx9J-HZKjSI/AAAAAAAADow/XrU2FHfdiAUggbxdNZU9B1L-0PvEK77NQCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B13%253A58%253A50.png" /></a></div>
+<br />
+The TrustZone kernel (TZBSP) receives the SCM call, maps it to QSEOS, which then finds the application with the given ID and calls the handler function which was registered earlier (from "Secure World" user-mode) in order to serve the request.<br />
+<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-QyQkLeGzno0/Vx9MyXz_C4I/AAAAAAAADpA/XohkYcl4K7cCtPwenb7_UFNRG0DdRSgogCLcB/s1600/Screenshot%2Bfrom%2B2016-04-26%2B14%253A10%253A52.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="529" src="https://2.bp.blogspot.com/-QyQkLeGzno0/Vx9MyXz_C4I/AAAAAAAADpA/XohkYcl4K7cCtPwenb7_UFNRG0DdRSgogCLcB/s640/Screenshot%2Bfrom%2B2016-04-26%2B14%253A10%253A52.png" width="640" /></a></div>
+<br />
+<br />
+<h2>
+What's Next? </h2>
+<br />
+Now that we have some understanding of what trustlets are and how they are loaded, we can move on to the exploits! In the next blog post we'll find a vulnerability in a very popular trustlet and exploit it in order to execute code within QSEE.<br />
+<br />
+<br />
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+<meta content='https://www.blogger.com/profile/00867710965331025912' itemprop='url'/>
+<a class='g-profile' href='https://www.blogger.com/profile/00867710965331025912' rel='author' title='author profile'>
+<span itemprop='name'>laginimaineb</span>
+</a>
+</span>
+</span>
+<span class='post-timestamp'>
+at
+<meta content='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html' itemprop='url'/>
+<a class='timestamp-link' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html' rel='bookmark' title='permanent link'><abbr class='published' itemprop='datePublished' title='2016-04-26T14:16:00+03:00'>14:16</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='post-comment-link'>
+</span>
+<span class='post-backlinks post-comment-link'>
+</span>
+<span class='post-icons'>
+<span class='item-control blog-admin pid-1869888142'>
+<a href='https://www.blogger.com/post-edit.g?blogID=2029700426505953971&postID=7126667581278688733&from=pencil' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='https://resources.blogblog.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+<div class='post-share-buttons goog-inline-block'>
+<a class='goog-inline-block share-button sb-email' href='https://www.blogger.com/share-post.g?blogID=2029700426505953971&postID=7126667581278688733&target=email' target='_blank' title='Email This'><span class='share-button-link-text'>Email This</span></a><a class='goog-inline-block share-button sb-blog' href='https://www.blogger.com/share-post.g?blogID=2029700426505953971&postID=7126667581278688733&target=blog' onclick='window.open(this.href, "_blank", "height=270,width=475"); return false;' target='_blank' title='BlogThis!'><span class='share-button-link-text'>BlogThis!</span></a><a class='goog-inline-block share-button sb-twitter' href='https://www.blogger.com/share-post.g?blogID=2029700426505953971&postID=7126667581278688733&target=twitter' target='_blank' title='Share to Twitter'><span class='share-button-link-text'>Share to Twitter</span></a><a class='goog-inline-block share-button sb-facebook' href='https://www.blogger.com/share-post.g?blogID=2029700426505953971&postID=7126667581278688733&target=facebook' onclick='window.open(this.href, "_blank", "height=430,width=640"); return false;' target='_blank' title='Share to Facebook'><span class='share-button-link-text'>Share to Facebook</span></a><a class='goog-inline-block share-button sb-pinterest' href='https://www.blogger.com/share-post.g?blogID=2029700426505953971&postID=7126667581278688733&target=pinterest' target='_blank' title='Share to Pinterest'><span class='share-button-link-text'>Share to Pinterest</span></a><div class='goog-inline-block google-plus-share-container'><g:plusone source='blogger:blog:plusone' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html' size='medium' width='300' annotation='inline'/></div>
+</div>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+Labels:
+<a href='http://bits-please.blogspot.com/search/label/Android' rel='tag'>Android</a>,
+<a href='http://bits-please.blogspot.com/search/label/Bootloader' rel='tag'>Bootloader</a>,
+<a href='http://bits-please.blogspot.com/search/label/qsee' rel='tag'>qsee</a>,
+<a href='http://bits-please.blogspot.com/search/label/qseecom' rel='tag'>qseecom</a>,
+<a href='http://bits-please.blogspot.com/search/label/qseos' rel='tag'>qseos</a>,
+<a href='http://bits-please.blogspot.com/search/label/Qualcomm' rel='tag'>Qualcomm</a>,
+<a href='http://bits-please.blogspot.com/search/label/trustlet' rel='tag'>trustlet</a>,
+<a href='http://bits-please.blogspot.com/search/label/TrustZone' rel='tag'>TrustZone</a>,
+<a href='http://bits-please.blogspot.com/search/label/tzbsp' rel='tag'>tzbsp</a>,
+<a href='http://bits-please.blogspot.com/search/label/widevine' rel='tag'>widevine</a>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<div class='comments' id='comments'>
+<a name='comments'></a>
+<h4>25 comments:</h4>
+<div class='comments-content'>
+<script async='async' src='//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js' type='text/javascript'></script>
+<script type='text/javascript'>
+    (function() {
+      var items = [{'id': '7445572264901013554', 'body': 'Great post as always!\x3cbr /\x3eI\x26#39;m waiting for the next post and in the meanwhile I hope you get some time to release the code for standalone version (without the kernel modification) of the older trustzone exploit :).\x3cbr /\x3e\x3cbr /\x3eAs I understand from the post, trustlets execute in a separate usermode inside QSEE. Can exploiting a trustlet lead to possible bootloader unlock? Since it\x26#39;s just a QSEE usermode application the possibly don\x26#39;t have access privileged instructions like blowing a qfuse right? \x3cbr /\x3e\x3cbr /\x3ePS: can I know the hex editor you are using? :)', 'timestamp': '1461752135188', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1461752135188#c7445572264901013554', 'author': {'name': 'Madushan Nishantha', 'avatarUrl': '//lh3.googleusercontent.com/-t002LhBrQDM/AAAAAAAAAAI/AAAAAAAAAIA/jyzbu9vbRWY/s35-c/photo.jpg', 'profileUrl': 'https://www.blogger.com/profile/01904428627732530957'}, 'displayTime': '27/04/2016, 13:15', 'deleteclass': 'item-control blog-admin pid-1799697675'}, {'id': '8903945521865490307', 'parentId': '7445572264901013554', 'body': 'I have re-written his original zero-write exploit as a standalone kernel module here: https://github.com/ghassani/qc-tz-es-activated-exploit', 'timestamp': '1461793866671', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1461793866671#c8903945521865490307', 'author': {'name': 'Ghassan Idriss', 'avatarUrl': '//lh5.googleusercontent.com/-qk--Oswq_ho/AAAAAAAAAAI/AAAAAAAABE0/j5bpLQMyFf4/s35-c/photo.jpg', 'profileUrl': 'https://www.blogger.com/profile/09270334858820145846'}, 'displayTime': '28/04/2016, 00:51', 'deleteclass': 'item-control blog-admin pid-876049149'}, {'id': '5807598149809347896', 'parentId': '7445572264901013554', 'body': 'The hex-editor looks like 010 editor, probably running on linux.', 'timestamp': '1461807891755', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1461807891755#c5807598149809347896', 'author': {'name': 'shuffle2', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/08201827125412664984'}, 'displayTime': '28/04/2016, 04:44', 'deleteclass': 'item-control blog-admin pid-148236642'}, {'id': '1400131753749019233', 'parentId': '7445572264901013554', 'body': 'Hi Madushan,\x3cbr /\x3e\x3cbr /\x3eFirst of all, thank you! Glad you enjoyed the post.\x3cbr /\x3e\x3cbr /\x3eI totally forgot about the \x26quot;standalone\x26quot; version of the older TZ exploit. In any case, I just cleaned it up a little bit and put it up on github, here: https://github.com/laginimaineb/standalone_msm8974\x3cbr /\x3e\x3cbr /\x3eIt relies on the previous kernel exploit (https://github.com/laginimaineb/cve-2014-4322/tree/master/Feud/jni) to get kernel code execution, and then dynamically finds the needed kernel symbols and does all the work without needing a kernel module.\x3cbr /\x3e\x3cbr /\x3eYou should definitely check out Ghassan\x26#39;s version as well! I just found out about it, but looking at the code it looks very clean and easy to use.\x3cbr /\x3e\x3cbr /\x3eAs for your second question - you are absolutely correct. QSEE does not have sufficient privileges in order to blow a QFuse, which means we\x26#39;ll need to go further than just exploiting QSEE - you\x26#39;ll see all the details in tomorrow\x26#39;s blog post :)\x3cbr /\x3e\x3cbr /\x3eFinally, as shuffle2 mentioned below - yes, I am using 010editor on Linux (which I highly recommend! It\x26#39;s a fantastic tool).\x3cbr /\x3e\x3cbr /\x3eCheers,\x3cbr /\x3eGal.', 'timestamp': '1462142199260', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462142199260#c1400131753749019233', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '02/05/2016, 01:36', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '1531539559861460488', 'parentId': '7445572264901013554', 'body': 'Ghassan - \x3cbr /\x3e\x3cbr /\x3eJust wanted to say thank you for wrapping the exploit in an LKM! Great work. The code is really clean and well-written. Kudos :)\x3cbr /\x3e\x3cbr /\x3eGal.', 'timestamp': '1462142679369', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462142679369#c1531539559861460488', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '02/05/2016, 01:44', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '1138895078418061568', 'parentId': '7445572264901013554', 'body': 'Great :D Thanks all you guys for all the help and sources. I waiting for the next post.', 'timestamp': '1462183222109', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462183222109#c1138895078418061568', 'author': {'name': 'Madushan Nishantha', 'avatarUrl': '//lh3.googleusercontent.com/-t002LhBrQDM/AAAAAAAAAAI/AAAAAAAAAIA/jyzbu9vbRWY/s35-c/photo.jpg', 'profileUrl': 'https://www.blogger.com/profile/01904428627732530957'}, 'displayTime': '02/05/2016, 13:00', 'deleteclass': 'item-control blog-admin pid-1799697675'}, {'id': '5048478095407393997', 'parentId': '7445572264901013554', 'body': 'Gal, thank you for that shout out. That means a lot! I love reading your articles, I learn so much from your explanations and examples. Glad that I am able to contribute something to you and your readers. Keep it up, I look forward to the next exploit :)', 'timestamp': '1462385873820', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462385873820#c5048478095407393997', 'author': {'name': 'Ghassan Idriss', 'avatarUrl': '//lh5.googleusercontent.com/-qk--Oswq_ho/AAAAAAAAAAI/AAAAAAAABE0/j5bpLQMyFf4/s35-c/photo.jpg', 'profileUrl': 'https://www.blogger.com/profile/09270334858820145846'}, 'displayTime': '04/05/2016, 21:17', 'deleteclass': 'item-control blog-admin pid-876049149'}, {'id': '4875245572616906729', 'body': 'Just wanted to drop a note and say: you have done some really great work here.\x3cbr /\x3e\x3cbr /\x3e I actually needed to implement some signing verification tools for Qualcomm\x26#39;s mdt/mbn format very recently. While I have a full set of docs from them it was actually reading through this article that got me most of the information I needed instead :)\x3cbr /\x3e\x3cbr /\x3eIt is funny how reversers often know more about the nitty gritty details of a company\x26#39;s product than they themselves seem to.\x3cbr /\x3e\x3cbr /\x3eI have also been enjoying the follow up articles on exploitation immensely. Keep up the great work!', 'timestamp': '1462952141108', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462952141108#c4875245572616906729', 'author': {'name': 'Eric Monti', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/14198057058153642599'}, 'displayTime': '11/05/2016, 10:35', 'deleteclass': 'item-control blog-admin pid-1482229223'}, {'id': '205635336673341719', 'parentId': '4875245572616906729', 'body': 'Thank you Eric, It means a lot to me!\x3cbr /\x3e\x3cbr /\x3eMore posts coming soon :)\x3cbr /\x3e\x3cbr /\x3e', 'timestamp': '1462978628039', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1462978628039#c205635336673341719', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '11/05/2016, 17:57', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '3239537141066367928', 'body': 'Very good! Enjoyed reading it, looking forward to new posts.\x3cbr /\x3e\x3cbr /\x3eCheers.', 'timestamp': '1464647951348', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1464647951348#c3239537141066367928', 'author': {'name': 'ETraud', 'avatarUrl': '//3.bp.blogspot.com/_0rtjHPkdgYA/So6ifW9VweI/AAAAAAAAADA/gO5n3GacxNQ/S45-s35/EU%2B005.jpg', 'profileUrl': 'https://www.blogger.com/profile/14189172369730338344'}, 'displayTime': '31/05/2016, 01:39', 'deleteclass': 'item-control blog-admin pid-863773199'}, {'id': '3318932141956177747', 'body': 'Great post! \x3cbr /\x3eCould this exploit be used on a snapdragon 820? Or is it only limited to the 800 and the 810?', 'timestamp': '1465197723361', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1465197723361#c3318932141956177747', 'author': {'name': 'Albano Nunez', 'avatarUrl': '//lh6.googleusercontent.com/-WexslRvk5hU/AAAAAAAAAAI/AAAAAAAAAoM/k5Pgfu9PsJ8/s35-c/photo.jpg', 'profileUrl': 'https://www.blogger.com/profile/06194942117450101785'}, 'displayTime': '06/06/2016, 10:22', 'deleteclass': 'item-control blog-admin pid-1824415700'}, {'id': '191355155492361235', 'body': 'Hi, great post!\x3cbr /\x3eI got lost in the signature recover phase. You wrote:\x3cbr /\x3e\x3cbr /\x3e\x26quot;Normally, the private key is used to produce a signature and the public key can be used to recover the signed data\x26quot;\x3cbr /\x3ePlease, could you explain me how you recover the signed data with the public key? It\x26#39;s the first time I heard about it.\x3cbr /\x3e\x3cbr /\x3eLater on you wrote:\x3cbr /\x3e\x3cbr /\x3e\x26quot;This means that if we try to \x26quot;decrypt\x26quot; a blob using our public key[...]\x26quot;\x3cbr /\x3eWhat do you want to mean by \x26quot;decrypt\x26quot;? Again, it\x26#39;s the first time I heard about using a public key RSA to decrypt data. \x3cbr /\x3e\x3cbr /\x3eI do not understand quite well your process of looking for the signature, what does trydec function do? \x3cbr /\x3eCould not you to try to do it by brute force? Sign-hash blob files with several hash functions and the public key and then looking for the result on the .mdt binary data?\x3cbr /\x3e\x3cbr /\x3eMaybe the problem is that I am a mathematician (...XD) trying to get your work. \x3cbr /\x3e\x3cbr /\x3eThank you again and waiting for more post!', 'timestamp': '1466150717248', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466150717248#c191355155492361235', 'author': {'name': 'jota', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/08615015479109041198'}, 'displayTime': '17/06/2016, 11:05', 'deleteclass': 'item-control blog-admin pid-1789697347'}, {'id': '4162570925251751357', 'parentId': '191355155492361235', 'body': 'Thank you!\x3cbr /\x3e\x3cbr /\x3eAs for you question - the main problem here is terminology regarding RSA.\x3cbr /\x3e\x3cbr /\x3eFirst, the mathematical definition of RSA is a trapdoor permutation family. Let\x26#39;s say we have the public exponent e, private exponent d and modulus N.\x3cbr /\x3e\x3cbr /\x3eNow, for each message m in Zn*, applying m\x26#39; \x3d (m^e) mod N is a onto one-to-one mapping into Zn*. Recall that we chosen e,d such that e*d \x3d 1 (mod phi(N)). This means that by applying the permutation (m\x26#39; ^ d) mod N \x3d ((m^e) ^ d) mod N \x3d (m ^ (e*d mod phi (N))) mod N \x3d m (mod N).\x3cbr /\x3e\x3cbr /\x3eSo applying the reverse permutation allowed us to retrieve the original message m.\x3cbr /\x3e\x3cbr /\x3eNow - people often refer to RSA as an encryption scheme. It isn\x26#39;t (because it\x26#39;s not CPA-secure, as it\x26#39;s completely deterministic). But you *could* think of it as encryption in the sense that after permuting a message with the public exponent, it\x26#39;s hard to retrieve the message without knowing the private exponent.\x3cbr /\x3e\x3cbr /\x3eIn that sense, we can say that the operation (m^e) mod N is public-encryption and (m^d) mod N is private-decryption.\x3cbr /\x3e\x3cbr /\x3eThe inverse is also true (since RSA is symmetric with regards to e,d). So we could say that (m^d) mod N is private-encryption and (m^e) mod N is public-decryption.\x3cbr /\x3e\x3cbr /\x3eNext comes an important primitive that is often used with RSA - signing. Imagine you have a message and would like to guarantee it was produced *only* by someone who knows the private exponent. You could do this by applying the permutation using the private exponent - that is, for each message m, produce (m^d) mod N. We just called this operation \x26quot;private-encryption\x26quot; in the previous paragraph, but when using RSA as a signature scheme, we could call this operation \x26quot;signing\x26quot;.\x3cbr /\x3e\x3cbr /\x3eSo... how is this useful at all? Well, someone with the public exponent can apply \x26quot;public-decryption\x26quot; on the message, and by the commutativity of multiplication: (m\x26#39; ^ d) mod N \x3d ((m^d) ^ e) mod N \x3d (m ^ (d*e mod phi (N))) mod N \x3d (e*d mod phi (N))) mod N \x3d m (mod N). So anyone with the public key can use this to retrieve the message m from the signature. We\x26#39;ll call this operation \x26quot;verify\x26quot;.\x3cbr /\x3e\x3cbr /\x3eFinally, if we already have a signature block produced using the private exponent, and we know the signed message has some unique structure, we can scan each block and attempt to perform RSA-verification (\x26quot;public-decryption\x26quot;) on every block. This will produce some message m\x26#39; - if it matches the structure we know, it is (other than a negligible probability) our signature block.\x3cbr /\x3e\x3cbr /\x3eCheers,\x3cbr /\x3eGal.', 'timestamp': '1466155176801', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466155176801#c4162570925251751357', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '17/06/2016, 12:19', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '6416231130047150441', 'parentId': '191355155492361235', 'body': 'Hi Gal,\x3cbr /\x3e\x3cbr /\x3eThank you by your quick response. I know what involves RSA cryptography, part of my daily job is related with crypto issues. The thing was that this was the first time I read the concept of encryption when you want to refer to signing, but I agree is just terminology.\x3cbr /\x3e\x3cbr /\x3eI know a forum is not the best place to write maths...jajaja but I suppose you wanted to write (the \x26#39; was left):\x3cbr /\x3e\x3cbr /\x3e (m^e) mod N \x3d m\x26#39; is public-encryption and (m\x26#39;^d) mod N is private-decryption\x3cbr /\x3e\x26amp;\x26amp;\x3cbr /\x3e (m^d) mod N \x3d m\x26#39; is private-encryption and (m\x26#39;^e) mod N is public-decryption\x3cbr /\x3e\x3cbr /\x3eTherefore, what I understand is that when you write \x26quot;we try to \x26quot;decrypt\x26quot; a blob using our public key\x26quot; what you are looking for is a hash value. Because what has been \x26quot;encrypted/signed\x26quot; should be a hash value. That\x26#39;s the way signing process works. \x3cbr /\x3e\x3cbr /\x3eThen, what is the output of your TryDecrypt function, the hash value of some of the blocks? How did you choose the m message along the .mdt binary to perform the \x26quot;decryption\x26quot;?\x3cbr /\x3e\x3cbr /\x3eThank you\x3cbr /\x3eRegards', 'timestamp': '1466160035937', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466160035937#c6416231130047150441', 'author': {'name': 'jota', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/08615015479109041198'}, 'displayTime': '17/06/2016, 13:40', 'deleteclass': 'item-control blog-admin pid-1789697347'}, {'id': '3027786649733698038', 'parentId': '191355155492361235', 'body': 'Hi Jota,\x3cbr /\x3e\x3cbr /\x3eSorry, just wanted to write a full explanation just in case other people find it useful. Anyway, I agree, writing math in a blog post is pretty hard :)\x3cbr /\x3e\x3cbr /\x3eAs for the actual value that is signed - it\x26#39;s actually special version of HMAC-SHA256 (w/ a different i_pad and o_pad) over all the block files\x26#39; data, concatenated. But you can outright ignore that and still find the signature block.\x3cbr /\x3e\x3cbr /\x3eHere are a couple of facts:\x3cbr /\x3e1. The signature is 2048 bits long, while the HMAC-SHA256 is only 256 bits long.\x3cbr /\x3e2. The signature uses PKCS#1 v1.5 padding\x3cbr /\x3e\x3cbr /\x3eIf we simply use RSA-public-decrypt w/ the appropriate padding on each 2048-bit block, we\x26#39;ll get a 2048 bit result. For each randomly-chosen block, the resulting block\x26#39;s bits will be roughly uniformly distributed (since RSA is a trapdoor permutation). But we know that in the signature blob the first 2048-256 bits will be zero (remember this is after removing the padding). The chances of that happening in uniformly distributed message is negligibly small 2^(-1792).\x3cbr /\x3e\x3cbr /\x3eSo all TryDecrypt does is iterate over each block, use \x26quot;RSA public decrypt\x26quot; w/ the appropriate padding, and check if the resulting block starts with a bunch of leading zeros.', 'timestamp': '1466163400221', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466163400221#c3027786649733698038', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '17/06/2016, 14:36', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '3789450190741781348', 'parentId': '191355155492361235', 'body': 'Hi Gal (my name is Jose, I use yours so I think is fair you to know mine),\x3cbr /\x3e\x3cbr /\x3eYou do not have to apologize, you did not know it and, probably, some readers have learnt a little more about crypto ;)\x3cbr /\x3e\x3cbr /\x3ePerfect, everything clear now! Maybe, you will find interesting this article: https://www.cs.cornell.edu/courses/cs5430/2015sp/notes/rsa_sign_vs_dec.php\x3cbr /\x3e\x3cbr /\x3eLook for vulnerabilities on non-public things is quite exciting, but have you try to check how good is the implementation of public TEEs such OP-TEE?\x3cbr /\x3e\x3cbr /\x3eWill you participate at any security conference to talk about this?\x3cbr /\x3e\x3cbr /\x3eThank you,\x3cbr /\x3eRegards', 'timestamp': '1466170577316', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466170577316#c3789450190741781348', 'author': {'name': 'jota', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/08615015479109041198'}, 'displayTime': '17/06/2016, 16:36', 'deleteclass': 'item-control blog-admin pid-1789697347'}, {'id': '4327939705699090714', 'parentId': '191355155492361235', 'body': 'Hi Jose,\x3cbr /\x3e\x3cbr /\x3eSorry for the late response! I missed your response.\x3cbr /\x3e\x3cbr /\x3eI didn\x26#39;t look at public TEEs yet, but I might get around to it (for example, Trusty TEE looks like it could be interesting...)\x3cbr /\x3e\x3cbr /\x3eAlso, I haven\x26#39;t spoken in any conference yet (and have nothing planned up ahead). Mainly because the conferences happen to coincide with the exam period :)\x3cbr /\x3e\x3cbr /\x3eAll the best,\x3cbr /\x3eGal.', 'timestamp': '1466348356059', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466348356059#c4327939705699090714', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '19/06/2016, 17:59', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '93944721742631503', 'body': 'Awesome post! \x3cbr /\x3e\x3cbr /\x3eI am trying to follow your post and reverse widevine trustlet(and if needed libQSEECom.so for the loading part).\x3cbr /\x3eIs there a easy way to locate the entry function for the trustlet being loaded? Do I have to look at the libQSEECom.so ?\x3cbr /\x3e\x3cbr /\x3eThanks in advance', 'timestamp': '1466476708276', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1466476708276#c93944721742631503', 'author': {'name': 'mindbl0wer', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/14603170490324070101'}, 'displayTime': '21/06/2016, 05:38', 'deleteclass': 'item-control blog-admin pid-2064178111'}, {'id': '547418151408561678', 'parentId': '93944721742631503', 'body': 'Thank you! I think the easiest way is to disassemble the first function (func_0) and look for the function the returns a function pointer. That function pointer points to the entry function. Alternately, you can just search for the Widevine commands (such as PRDiag*) and work backwards from there using XREFs.', 'timestamp': '1468598233476', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1468598233476#c547418151408561678', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '15/07/2016, 18:57', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '1934094208864187424', 'body': 'Cool post!\x3cbr /\x3e\x3cbr /\x3e\x26quot;So let\x26#39;s search for these two bytes in the \x26quot;.mdt\x26quot; and save each found blob into a file.\x26quot;\x3cbr /\x3e\x3cbr /\x3eHow could you know the length of these blobs?', 'timestamp': '1490208746512', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1490208746512#c1934094208864187424', 'author': {'name': 'CrazyGalaxy', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/09637205807262584535'}, 'displayTime': '22/03/2017, 20:52', 'deleteclass': 'item-control blog-admin pid-2096606200'}, {'id': '5867791342939111567', 'parentId': '1934094208864187424', 'body': 'I didn\x26#39;t, but you can save the blob from the match index until the end of the file, and asn1parse will stop at the end of the ASN1 data.', 'timestamp': '1490222669423', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1490222669423#c5867791342939111567', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '23/03/2017, 00:44', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '3728259132728333738', 'body': 'Could you share the script to \x26quot;decrypt\x26quot; the 2048-bit signature blob?\x3cbr /\x3eI searched the Internet but most of them work on certificates with certain formats, rather than raw-data parameters.', 'timestamp': '1493921873922', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1493921873922#c3728259132728333738', 'author': {'name': 'CrazyGalaxy', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/09637205807262584535'}, 'displayTime': '04/05/2017, 21:17', 'deleteclass': 'item-control blog-admin pid-2096606200'}, {'id': '8386014932781223013', 'parentId': '3728259132728333738', 'body': 'Hi CrazyGalaxy,\x3cbr /\x3e\x3cbr /\x3eI didn\x26#39;t do anything fancy - I simply used OpenSSL\x26#39;s RSA_public_decrypt (https://www.openssl.org/docs/man1.1.0/crypto/RSA_public_decrypt.html) for the \x26quot;decryption\x26quot;.\x3cbr /\x3e\x3cbr /\x3eTo get OpenSSL to load the public key, I did write a small PyCrypto script to define the public key from the parameters (e,N) using RSA.construct (https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct), and then saved them to a PEM.\x3cbr /\x3e\x3cbr /\x3eAll the best,\x3cbr /\x3eGal. ', 'timestamp': '1497815101004', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1497815101004#c8386014932781223013', 'author': {'name': 'laginimaineb', 'avatarUrl': '//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg', 'profileUrl': 'https://www.blogger.com/profile/00867710965331025912'}, 'displayTime': '18/06/2017, 22:45', 'deleteclass': 'item-control blog-admin pid-1869888142'}, {'id': '2636005355093010540', 'body': 'How do you get to the trustlets in the first place? Using the link to the shamu firmware that you provide I find a system.img file in which I assume the widevine trustlet exists, but I cannot continue from here. How did you get to the actual file?', 'timestamp': '1502191139446', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1502191139446#c2636005355093010540', 'author': {'name': 'HPuff', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/10545502443931256997'}, 'displayTime': '08/08/2017, 14:18', 'deleteclass': 'item-control blog-admin pid-1726106582'}, {'id': '3032727021245116243', 'body': 'hi\x3cbr /\x3ewhen i use the QSEECom_start_app,return an error :QSEECom_start_app(.., \x26#39;/firmware/image/\x26#39;, \x26#39;***\x26#39;, 1048640) \x3d \x26#39;Invalid argument\x26#39;.\x3cbr /\x3eplease help me check\x3cbr /\x3etks', 'timestamp': '1517275148592', 'permalink': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment\x3d1517275148592#c3032727021245116243', 'author': {'name': '陈俊浩', 'avatarUrl': '//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA\x3ds35', 'profileUrl': 'https://www.blogger.com/profile/14153638839604310005'}, 'displayTime': '30/01/2018, 03:19', 'deleteclass': 'item-control blog-admin pid-36528537'}];
+      var msgs = {'loadMore': 'Load more...', 'loading': 'Loading...', 'loaded': 'No more.', 'addComment': 'Add comment', 'reply': 'Reply', 'delete': 'Delete'};
+      var config = {'blogId': '2029700426505953971', 'postId': '7126667581278688733', 'feed': 'http://bits-please.blogspot.com/feeds/7126667581278688733/comments/default', 'authorName': 'laginimaineb', 'authorUrl': 'https://www.blogger.com/profile/00867710965331025912', 'baseUri': 'https://www.blogger.com', 'maxThreadDepth': 2};
+
+// <![CDATA[
+      var cursor = null;
+      if (items && items.length > 0) {
+        cursor = parseInt(items[items.length - 1].timestamp) + 1;
+      }
+
+      var bodyFromEntry = function(entry) {
+        var text = (entry &&
+                    ((entry.content && entry.content.$t) ||
+                     (entry.summary && entry.summary.$t))) ||
+            '';
+        if (entry && entry.gd$extendedProperty) {
+          for (var k in entry.gd$extendedProperty) {
+            if (entry.gd$extendedProperty[k].name == 'blogger.contentRemoved') {
+              return '<span class="deleted-comment">' + text + '</span>';
+            }
+          }
+        }
+        return text;
+      }
+
+      var parse = function(data) {
+        cursor = null;
+        var comments = [];
+        if (data && data.feed && data.feed.entry) {
+          for (var i = 0, entry; entry = data.feed.entry[i]; i++) {
+            var comment = {};
+            // comment ID, parsed out of the original id format
+            var id = /blog-(\d+).post-(\d+)/.exec(entry.id.$t);
+            comment.id = id ? id[2] : null;
+            comment.body = bodyFromEntry(entry);
+            comment.timestamp = Date.parse(entry.published.$t) + '';
+            if (entry.author && entry.author.constructor === Array) {
+              var auth = entry.author[0];
+              if (auth) {
+                comment.author = {
+                  name: (auth.name ? auth.name.$t : undefined),
+                  profileUrl: (auth.uri ? auth.uri.$t : undefined),
+                  avatarUrl: (auth.gd$image ? auth.gd$image.src : undefined)
+                };
+              }
+            }
+            if (entry.link) {
+              if (entry.link[2]) {
+                comment.link = comment.permalink = entry.link[2].href;
+              }
+              if (entry.link[3]) {
+                var pid = /.*comments\/default\/(\d+)\?.*/.exec(entry.link[3].href);
+                if (pid && pid[1]) {
+                  comment.parentId = pid[1];
+                }
+              }
+            }
+            comment.deleteclass = 'item-control blog-admin';
+            if (entry.gd$extendedProperty) {
+              for (var k in entry.gd$extendedProperty) {
+                if (entry.gd$extendedProperty[k].name == 'blogger.itemClass') {
+                  comment.deleteclass += ' ' + entry.gd$extendedProperty[k].value;
+                } else if (entry.gd$extendedProperty[k].name == 'blogger.displayTime') {
+                  comment.displayTime = entry.gd$extendedProperty[k].value;
+                }
+              }
+            }
+            comments.push(comment);
+          }
+        }
+        return comments;
+      };
+
+      var paginator = function(callback) {
+        if (hasMore()) {
+          var url = config.feed + '?alt=json&v=2&orderby=published&reverse=false&max-results=50';
+          if (cursor) {
+            url += '&published-min=' + new Date(cursor).toISOString();
+          }
+          window.bloggercomments = function(data) {
+            var parsed = parse(data);
+            cursor = parsed.length < 50 ? null
+                : parseInt(parsed[parsed.length - 1].timestamp) + 1
+            callback(parsed);
+            window.bloggercomments = null;
+          }
+          url += '&callback=bloggercomments';
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = url;
+          document.getElementsByTagName('head')[0].appendChild(script);
+        }
+      };
+      var hasMore = function() {
+        return !!cursor;
+      };
+      var getMeta = function(key, comment) {
+        if ('iswriter' == key) {
+          var matches = !!comment.author
+              && comment.author.name == config.authorName
+              && comment.author.profileUrl == config.authorUrl;
+          return matches ? 'true' : '';
+        } else if ('deletelink' == key) {
+          return config.baseUri + '/delete-comment.g?blogID='
+               + config.blogId + '&postID=' + comment.id;
+        } else if ('deleteclass' == key) {
+          return comment.deleteclass;
+        }
+        return '';
+      };
+
+      var replybox = null;
+      var replyUrlParts = null;
+      var replyParent = undefined;
+
+      var onReply = function(commentId, domId) {
+        if (replybox == null) {
+          // lazily cache replybox, and adjust to suit this style:
+          replybox = document.getElementById('comment-editor');
+          if (replybox != null) {
+            replybox.height = '250px';
+            replybox.style.display = 'block';
+            replyUrlParts = replybox.src.split('#');
+          }
+        }
+        if (replybox && (commentId !== replyParent)) {
+          replybox.src = '';
+          document.getElementById(domId).insertBefore(replybox, null);
+          replybox.src = replyUrlParts[0]
+              + (commentId ? '&parentID=' + commentId : '')
+              + '#' + replyUrlParts[1];
+          replyParent = commentId;
+        }
+      };
+
+      var hash = (window.location.hash || '#').substring(1);
+      var startThread, targetComment;
+      if (/^comment-form_/.test(hash)) {
+        startThread = hash.substring('comment-form_'.length);
+      } else if (/^c[0-9]+$/.test(hash)) {
+        targetComment = hash.substring(1);
+      }
+
+      // Configure commenting API:
+      var configJso = {
+        'maxDepth': config.maxThreadDepth
+      };
+      var provider = {
+        'id': config.postId,
+        'data': items,
+        'loadNext': paginator,
+        'hasMore': hasMore,
+        'getMeta': getMeta,
+        'onReply': onReply,
+        'rendered': true,
+        'initComment': targetComment,
+        'initReplyThread': startThread,
+        'config': configJso,
+        'messages': msgs
+      };
+
+      var render = function() {
+        if (window.goog && window.goog.comments) {
+          var holder = document.getElementById('comment-holder');
+          window.goog.comments.render(holder, provider);
+        }
+      };
+
+      // render now, or queue to render when library loads:
+      if (window.goog && window.goog.comments) {
+        render();
+      } else {
+        window.goog = window.goog || {};
+        window.goog.comments = window.goog.comments || {};
+        window.goog.comments.loadQueue = window.goog.comments.loadQueue || [];
+        window.goog.comments.loadQueue.push(render);
+      }
+    })();
+// ]]>
+  </script>
+<div id='comment-holder'>
+<div id='bc_0_26C' kind='c'><div id='bc_0_26CT'><div id='bc_0_25T' class='comment-thread' kind='r'  t='0' u='0'><ol id='bc_0_25TB'><li id='bc_0_6B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/-t002LhBrQDM/AAAAAAAAAAI/AAAAAAAAAIA/jyzbu9vbRWY/s35-c/photo.jpg'></img></div><div id='c7445572264901013554' class='comment-block'><div id='bc_0_6M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/01904428627732530957'>Madushan Nishantha</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1461752135188#c7445572264901013554'>27/04/2016, 13:15</a></span></div><p id='bc_0_6MC' class='comment-content'>Great post as always!<br />I&#39;m waiting for the next post and in the meanwhile I hope you get some time to release the code for standalone version (without the kernel modification) of the older trustzone exploit :).<br /><br />As I understand from the post, trustlets execute in a separate usermode inside QSEE. Can exploiting a trustlet lead to possible bootloader unlock? Since it&#39;s just a QSEE usermode application the possibly don&#39;t have access privileged instructions like blowing a qfuse right? <br /><br />PS: can I know the hex editor you are using? :)</p><span id='bc_0_6MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-1799697675'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=7445572264901013554'>Delete</a></span></span></div><div id='bc_0_6BR' class='comment-replies'><span id='bc_0_6b+seedQYVD' kind='d'><div id='bc_0_0T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_0TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_0TA' class='thread-arrow'></span><span id='bc_0_0TN' class='thread-count'><span id='bc_0_0TNT' style='display: none;'></span><span id='bc_0_0TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_0TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_0TC' class='thread-chrome thread-expanded'><div><li id='bc_0_0B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh5.googleusercontent.com/-qk--Oswq_ho/AAAAAAAAAAI/AAAAAAAABE0/j5bpLQMyFf4/s35-c/photo.jpg'></img></div><div id='c8903945521865490307' class='comment-block'><div id='bc_0_0M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/09270334858820145846'>Ghassan Idriss</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1461793866671#c8903945521865490307'>28/04/2016, 00:51</a></span></div><p id='bc_0_0MC' class='comment-content'>I have re-written his original zero-write exploit as a standalone kernel module here: https://github.com/ghassani/qc-tz-es-activated-exploit</p><span id='bc_0_0MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-876049149'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=8903945521865490307'>Delete</a></span></span></div><div id='bc_0_0BR' class='comment-replies'></div><div id='bc_0_0B_box' class='comment-replybox-single'></div></li><li id='bc_0_1B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c5807598149809347896' class='comment-block'><div id='bc_0_1M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/08201827125412664984'>shuffle2</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1461807891755#c5807598149809347896'>28/04/2016, 04:44</a></span></div><p id='bc_0_1MC' class='comment-content'>The hex-editor looks like 010 editor, probably running on linux.</p><span id='bc_0_1MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-148236642'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=5807598149809347896'>Delete</a></span></span></div><div id='bc_0_1BR' class='comment-replies'></div><div id='bc_0_1B_box' class='comment-replybox-single'></div></li><li id='bc_0_2B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c1400131753749019233' class='comment-block'><div id='bc_0_2M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462142199260#c1400131753749019233'>02/05/2016, 01:36</a></span></div><p id='bc_0_2MC' class='comment-content'>Hi Madushan,<br /><br />First of all, thank you! Glad you enjoyed the post.<br /><br />I totally forgot about the &quot;standalone&quot; version of the older TZ exploit. In any case, I just cleaned it up a little bit and put it up on github, here: https://github.com/laginimaineb/standalone_msm8974<br /><br />It relies on the previous kernel exploit (https://github.com/laginimaineb/cve-2014-4322/tree/master/Feud/jni) to get kernel code execution, and then dynamically finds the needed kernel symbols and does all the work without needing a kernel module.<br /><br />You should definitely check out Ghassan&#39;s version as well! I just found out about it, but looking at the code it looks very clean and easy to use.<br /><br />As for your second question - you are absolutely correct. QSEE does not have sufficient privileges in order to blow a QFuse, which means we&#39;ll need to go further than just exploiting QSEE - you&#39;ll see all the details in tomorrow&#39;s blog post :)<br /><br />Finally, as shuffle2 mentioned below - yes, I am using 010editor on Linux (which I highly recommend! It&#39;s a fantastic tool).<br /><br />Cheers,<br />Gal.</p><span id='bc_0_2MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=1400131753749019233'>Delete</a></span></span></div><div id='bc_0_2BR' class='comment-replies'></div><div id='bc_0_2B_box' class='comment-replybox-single'></div></li><li id='bc_0_3B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c1531539559861460488' class='comment-block'><div id='bc_0_3M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462142679369#c1531539559861460488'>02/05/2016, 01:44</a></span></div><p id='bc_0_3MC' class='comment-content'>Ghassan - <br /><br />Just wanted to say thank you for wrapping the exploit in an LKM! Great work. The code is really clean and well-written. Kudos :)<br /><br />Gal.</p><span id='bc_0_3MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=1531539559861460488'>Delete</a></span></span></div><div id='bc_0_3BR' class='comment-replies'></div><div id='bc_0_3B_box' class='comment-replybox-single'></div></li><li id='bc_0_4B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/-t002LhBrQDM/AAAAAAAAAAI/AAAAAAAAAIA/jyzbu9vbRWY/s35-c/photo.jpg'></img></div><div id='c1138895078418061568' class='comment-block'><div id='bc_0_4M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/01904428627732530957'>Madushan Nishantha</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462183222109#c1138895078418061568'>02/05/2016, 13:00</a></span></div><p id='bc_0_4MC' class='comment-content'>Great :D Thanks all you guys for all the help and sources. I waiting for the next post.</p><span id='bc_0_4MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1799697675'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=1138895078418061568'>Delete</a></span></span></div><div id='bc_0_4BR' class='comment-replies'></div><div id='bc_0_4B_box' class='comment-replybox-single'></div></li><li id='bc_0_5B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh5.googleusercontent.com/-qk--Oswq_ho/AAAAAAAAAAI/AAAAAAAABE0/j5bpLQMyFf4/s35-c/photo.jpg'></img></div><div id='c5048478095407393997' class='comment-block'><div id='bc_0_5M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/09270334858820145846'>Ghassan Idriss</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462385873820#c5048478095407393997'>04/05/2016, 21:17</a></span></div><p id='bc_0_5MC' class='comment-content'>Gal, thank you for that shout out. That means a lot! I love reading your articles, I learn so much from your explanations and examples. Glad that I am able to contribute something to you and your readers. Keep it up, I look forward to the next exploit :)</p><span id='bc_0_5MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-876049149'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=5048478095407393997'>Delete</a></span></span></div><div id='bc_0_5BR' class='comment-replies'></div><div id='bc_0_5B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_0I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_0T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_6B_box' class='comment-replybox-single'></div></li><li id='bc_0_8B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c4875245572616906729' class='comment-block'><div id='bc_0_8M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/14198057058153642599'>Eric Monti</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462952141108#c4875245572616906729'>11/05/2016, 10:35</a></span></div><p id='bc_0_8MC' class='comment-content'>Just wanted to drop a note and say: you have done some really great work here.<br /><br /> I actually needed to implement some signing verification tools for Qualcomm&#39;s mdt/mbn format very recently. While I have a full set of docs from them it was actually reading through this article that got me most of the information I needed instead :)<br /><br />It is funny how reversers often know more about the nitty gritty details of a company&#39;s product than they themselves seem to.<br /><br />I have also been enjoying the follow up articles on exploitation immensely. Keep up the great work!</p><span id='bc_0_8MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-1482229223'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=4875245572616906729'>Delete</a></span></span></div><div id='bc_0_8BR' class='comment-replies'><span id='bc_0_8b+seedQYcD' kind='d'><div id='bc_0_7T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_7TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_7TA' class='thread-arrow'></span><span id='bc_0_7TN' class='thread-count'><span id='bc_0_7TNT' style='display: none;'></span><span id='bc_0_7TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_7TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_7TC' class='thread-chrome thread-expanded'><div><li id='bc_0_7B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c205635336673341719' class='comment-block'><div id='bc_0_7M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1462978628039#c205635336673341719'>11/05/2016, 17:57</a></span></div><p id='bc_0_7MC' class='comment-content'>Thank you Eric, It means a lot to me!<br /><br />More posts coming soon :)<br /><br /></p><span id='bc_0_7MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=205635336673341719'>Delete</a></span></span></div><div id='bc_0_7BR' class='comment-replies'></div><div id='bc_0_7B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_7I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_7T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_8B_box' class='comment-replybox-single'></div></li><li id='bc_0_9B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/_0rtjHPkdgYA/So6ifW9VweI/AAAAAAAAADA/gO5n3GacxNQ/S45-s35/EU%2B005.jpg'></img></div><div id='c3239537141066367928' class='comment-block'><div id='bc_0_9M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/14189172369730338344'>ETraud</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1464647951348#c3239537141066367928'>31/05/2016, 01:39</a></span></div><p id='bc_0_9MC' class='comment-content'>Very good! Enjoyed reading it, looking forward to new posts.<br /><br />Cheers.</p><span id='bc_0_9MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-863773199'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3239537141066367928'>Delete</a></span></span></div><div id='bc_0_9BR' class='comment-replies'></div><div id='bc_0_9B_box' class='comment-replybox-single'></div></li><li id='bc_0_10B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh6.googleusercontent.com/-WexslRvk5hU/AAAAAAAAAAI/AAAAAAAAAoM/k5Pgfu9PsJ8/s35-c/photo.jpg'></img></div><div id='c3318932141956177747' class='comment-block'><div id='bc_0_10M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/06194942117450101785'>Albano Nunez</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1465197723361#c3318932141956177747'>06/06/2016, 10:22</a></span></div><p id='bc_0_10MC' class='comment-content'>Great post! <br />Could this exploit be used on a snapdragon 820? Or is it only limited to the 800 and the 810?</p><span id='bc_0_10MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-1824415700'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3318932141956177747'>Delete</a></span></span></div><div id='bc_0_10BR' class='comment-replies'></div><div id='bc_0_10B_box' class='comment-replybox-single'></div></li><li id='bc_0_16B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c191355155492361235' class='comment-block'><div id='bc_0_16M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/08615015479109041198'>jota</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466150717248#c191355155492361235'>17/06/2016, 11:05</a></span></div><p id='bc_0_16MC' class='comment-content'>Hi, great post!<br />I got lost in the signature recover phase. You wrote:<br /><br />&quot;Normally, the private key is used to produce a signature and the public key can be used to recover the signed data&quot;<br />Please, could you explain me how you recover the signed data with the public key? It&#39;s the first time I heard about it.<br /><br />Later on you wrote:<br /><br />&quot;This means that if we try to &quot;decrypt&quot; a blob using our public key[...]&quot;<br />What do you want to mean by &quot;decrypt&quot;? Again, it&#39;s the first time I heard about using a public key RSA to decrypt data. <br /><br />I do not understand quite well your process of looking for the signature, what does trydec function do? <br />Could not you to try to do it by brute force? Sign-hash blob files with several hash functions and the public key and then looking for the result on the .mdt binary data?<br /><br />Maybe the problem is that I am a mathematician (...XD) trying to get your work. <br /><br />Thank you again and waiting for more post!</p><span id='bc_0_16MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-1789697347'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=191355155492361235'>Delete</a></span></span></div><div id='bc_0_16BR' class='comment-replies'><span id='bc_0_16b+seedQYgD' kind='d'><div id='bc_0_11T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_11TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_11TA' class='thread-arrow'></span><span id='bc_0_11TN' class='thread-count'><span id='bc_0_11TNT' style='display: none;'></span><span id='bc_0_11TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_11TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_11TC' class='thread-chrome thread-expanded'><div><li id='bc_0_11B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c4162570925251751357' class='comment-block'><div id='bc_0_11M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466155176801#c4162570925251751357'>17/06/2016, 12:19</a></span></div><p id='bc_0_11MC' class='comment-content'>Thank you!<br /><br />As for you question - the main problem here is terminology regarding RSA.<br /><br />First, the mathematical definition of RSA is a trapdoor permutation family. Let&#39;s say we have the public exponent e, private exponent d and modulus N.<br /><br />Now, for each message m in Zn*, applying m&#39; = (m^e) mod N is a onto one-to-one mapping into Zn*. Recall that we chosen e,d such that e*d = 1 (mod phi(N)). This means that by applying the permutation (m&#39; ^ d) mod N = ((m^e) ^ d) mod N = (m ^ (e*d mod phi (N))) mod N = m (mod N).<br /><br />So applying the reverse permutation allowed us to retrieve the original message m.<br /><br />Now - people often refer to RSA as an encryption scheme. It isn&#39;t (because it&#39;s not CPA-secure, as it&#39;s completely deterministic). But you *could* think of it as encryption in the sense that after permuting a message with the public exponent, it&#39;s hard to retrieve the message without knowing the private exponent.<br /><br />In that sense, we can say that the operation (m^e) mod N is public-encryption and (m^d) mod N is private-decryption.<br /><br />The inverse is also true (since RSA is symmetric with regards to e,d). So we could say that (m^d) mod N is private-encryption and (m^e) mod N is public-decryption.<br /><br />Next comes an important primitive that is often used with RSA - signing. Imagine you have a message and would like to guarantee it was produced *only* by someone who knows the private exponent. You could do this by applying the permutation using the private exponent - that is, for each message m, produce (m^d) mod N. We just called this operation &quot;private-encryption&quot; in the previous paragraph, but when using RSA as a signature scheme, we could call this operation &quot;signing&quot;.<br /><br />So... how is this useful at all? Well, someone with the public exponent can apply &quot;public-decryption&quot; on the message, and by the commutativity of multiplication: (m&#39; ^ d) mod N = ((m^d) ^ e) mod N = (m ^ (d*e mod phi (N))) mod N = (e*d mod phi (N))) mod N = m (mod N). So anyone with the public key can use this to retrieve the message m from the signature. We&#39;ll call this operation &quot;verify&quot;.<br /><br />Finally, if we already have a signature block produced using the private exponent, and we know the signed message has some unique structure, we can scan each block and attempt to perform RSA-verification (&quot;public-decryption&quot;) on every block. This will produce some message m&#39; - if it matches the structure we know, it is (other than a negligible probability) our signature block.<br /><br />Cheers,<br />Gal.</p><span id='bc_0_11MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=4162570925251751357'>Delete</a></span></span></div><div id='bc_0_11BR' class='comment-replies'></div><div id='bc_0_11B_box' class='comment-replybox-single'></div></li><li id='bc_0_12B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c6416231130047150441' class='comment-block'><div id='bc_0_12M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/08615015479109041198'>jota</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466160035937#c6416231130047150441'>17/06/2016, 13:40</a></span></div><p id='bc_0_12MC' class='comment-content'>Hi Gal,<br /><br />Thank you by your quick response. I know what involves RSA cryptography, part of my daily job is related with crypto issues. The thing was that this was the first time I read the concept of encryption when you want to refer to signing, but I agree is just terminology.<br /><br />I know a forum is not the best place to write maths...jajaja but I suppose you wanted to write (the &#39; was left):<br /><br /> (m^e) mod N = m&#39; is public-encryption and (m&#39;^d) mod N is private-decryption<br />&amp;&amp;<br /> (m^d) mod N = m&#39; is private-encryption and (m&#39;^e) mod N is public-decryption<br /><br />Therefore, what I understand is that when you write &quot;we try to &quot;decrypt&quot; a blob using our public key&quot; what you are looking for is a hash value. Because what has been &quot;encrypted/signed&quot; should be a hash value. That&#39;s the way signing process works. <br /><br />Then, what is the output of your TryDecrypt function, the hash value of some of the blocks? How did you choose the m message along the .mdt binary to perform the &quot;decryption&quot;?<br /><br />Thank you<br />Regards</p><span id='bc_0_12MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1789697347'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=6416231130047150441'>Delete</a></span></span></div><div id='bc_0_12BR' class='comment-replies'></div><div id='bc_0_12B_box' class='comment-replybox-single'></div></li><li id='bc_0_13B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c3027786649733698038' class='comment-block'><div id='bc_0_13M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466163400221#c3027786649733698038'>17/06/2016, 14:36</a></span></div><p id='bc_0_13MC' class='comment-content'>Hi Jota,<br /><br />Sorry, just wanted to write a full explanation just in case other people find it useful. Anyway, I agree, writing math in a blog post is pretty hard :)<br /><br />As for the actual value that is signed - it&#39;s actually special version of HMAC-SHA256 (w/ a different i_pad and o_pad) over all the block files&#39; data, concatenated. But you can outright ignore that and still find the signature block.<br /><br />Here are a couple of facts:<br />1. The signature is 2048 bits long, while the HMAC-SHA256 is only 256 bits long.<br />2. The signature uses PKCS#1 v1.5 padding<br /><br />If we simply use RSA-public-decrypt w/ the appropriate padding on each 2048-bit block, we&#39;ll get a 2048 bit result. For each randomly-chosen block, the resulting block&#39;s bits will be roughly uniformly distributed (since RSA is a trapdoor permutation). But we know that in the signature blob the first 2048-256 bits will be zero (remember this is after removing the padding). The chances of that happening in uniformly distributed message is negligibly small 2^(-1792).<br /><br />So all TryDecrypt does is iterate over each block, use &quot;RSA public decrypt&quot; w/ the appropriate padding, and check if the resulting block starts with a bunch of leading zeros.</p><span id='bc_0_13MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3027786649733698038'>Delete</a></span></span></div><div id='bc_0_13BR' class='comment-replies'></div><div id='bc_0_13B_box' class='comment-replybox-single'></div></li><li id='bc_0_14B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c3789450190741781348' class='comment-block'><div id='bc_0_14M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/08615015479109041198'>jota</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466170577316#c3789450190741781348'>17/06/2016, 16:36</a></span></div><p id='bc_0_14MC' class='comment-content'>Hi Gal (my name is Jose, I use yours so I think is fair you to know mine),<br /><br />You do not have to apologize, you did not know it and, probably, some readers have learnt a little more about crypto ;)<br /><br />Perfect, everything clear now! Maybe, you will find interesting this article: https://www.cs.cornell.edu/courses/cs5430/2015sp/notes/rsa_sign_vs_dec.php<br /><br />Look for vulnerabilities on non-public things is quite exciting, but have you try to check how good is the implementation of public TEEs such OP-TEE?<br /><br />Will you participate at any security conference to talk about this?<br /><br />Thank you,<br />Regards</p><span id='bc_0_14MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1789697347'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3789450190741781348'>Delete</a></span></span></div><div id='bc_0_14BR' class='comment-replies'></div><div id='bc_0_14B_box' class='comment-replybox-single'></div></li><li id='bc_0_15B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c4327939705699090714' class='comment-block'><div id='bc_0_15M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466348356059#c4327939705699090714'>19/06/2016, 17:59</a></span></div><p id='bc_0_15MC' class='comment-content'>Hi Jose,<br /><br />Sorry for the late response! I missed your response.<br /><br />I didn&#39;t look at public TEEs yet, but I might get around to it (for example, Trusty TEE looks like it could be interesting...)<br /><br />Also, I haven&#39;t spoken in any conference yet (and have nothing planned up ahead). Mainly because the conferences happen to coincide with the exam period :)<br /><br />All the best,<br />Gal.</p><span id='bc_0_15MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=4327939705699090714'>Delete</a></span></span></div><div id='bc_0_15BR' class='comment-replies'></div><div id='bc_0_15B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_11I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_11T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_16B_box' class='comment-replybox-single'></div></li><li id='bc_0_18B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c93944721742631503' class='comment-block'><div id='bc_0_18M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/14603170490324070101'>mindbl0wer</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1466476708276#c93944721742631503'>21/06/2016, 05:38</a></span></div><p id='bc_0_18MC' class='comment-content'>Awesome post! <br /><br />I am trying to follow your post and reverse widevine trustlet(and if needed libQSEECom.so for the loading part).<br />Is there a easy way to locate the entry function for the trustlet being loaded? Do I have to look at the libQSEECom.so ?<br /><br />Thanks in advance</p><span id='bc_0_18MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-2064178111'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=93944721742631503'>Delete</a></span></span></div><div id='bc_0_18BR' class='comment-replies'><span id='bc_0_18b+seedQYmD' kind='d'><div id='bc_0_17T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_17TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_17TA' class='thread-arrow'></span><span id='bc_0_17TN' class='thread-count'><span id='bc_0_17TNT' style='display: none;'></span><span id='bc_0_17TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_17TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_17TC' class='thread-chrome thread-expanded'><div><li id='bc_0_17B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c547418151408561678' class='comment-block'><div id='bc_0_17M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1468598233476#c547418151408561678'>15/07/2016, 18:57</a></span></div><p id='bc_0_17MC' class='comment-content'>Thank you! I think the easiest way is to disassemble the first function (func_0) and look for the function the returns a function pointer. That function pointer points to the entry function. Alternately, you can just search for the Widevine commands (such as PRDiag*) and work backwards from there using XREFs.</p><span id='bc_0_17MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=547418151408561678'>Delete</a></span></span></div><div id='bc_0_17BR' class='comment-replies'></div><div id='bc_0_17B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_17I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_17T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_18B_box' class='comment-replybox-single'></div></li><li id='bc_0_20B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c1934094208864187424' class='comment-block'><div id='bc_0_20M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/09637205807262584535'>CrazyGalaxy</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1490208746512#c1934094208864187424'>22/03/2017, 20:52</a></span></div><p id='bc_0_20MC' class='comment-content'>Cool post!<br /><br />&quot;So let&#39;s search for these two bytes in the &quot;.mdt&quot; and save each found blob into a file.&quot;<br /><br />How could you know the length of these blobs?</p><span id='bc_0_20MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-2096606200'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=1934094208864187424'>Delete</a></span></span></div><div id='bc_0_20BR' class='comment-replies'><span id='bc_0_20b+seedQYoD' kind='d'><div id='bc_0_19T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_19TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_19TA' class='thread-arrow'></span><span id='bc_0_19TN' class='thread-count'><span id='bc_0_19TNT' style='display: none;'></span><span id='bc_0_19TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_19TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_19TC' class='thread-chrome thread-expanded'><div><li id='bc_0_19B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c5867791342939111567' class='comment-block'><div id='bc_0_19M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1490222669423#c5867791342939111567'>23/03/2017, 00:44</a></span></div><p id='bc_0_19MC' class='comment-content'>I didn&#39;t, but you can save the blob from the match index until the end of the file, and asn1parse will stop at the end of the ASN1 data.</p><span id='bc_0_19MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=5867791342939111567'>Delete</a></span></span></div><div id='bc_0_19BR' class='comment-replies'></div><div id='bc_0_19B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_19I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_19T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_20B_box' class='comment-replybox-single'></div></li><li id='bc_0_22B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c3728259132728333738' class='comment-block'><div id='bc_0_22M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/09637205807262584535'>CrazyGalaxy</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1493921873922#c3728259132728333738'>04/05/2017, 21:17</a></span></div><p id='bc_0_22MC' class='comment-content'>Could you share the script to &quot;decrypt&quot; the 2048-bit signature blob?<br />I searched the Internet but most of them work on certificates with certain formats, rather than raw-data parameters.</p><span id='bc_0_22MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-2096606200'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3728259132728333738'>Delete</a></span></span></div><div id='bc_0_22BR' class='comment-replies'><span id='bc_0_22b+seedQYqD' kind='d'><div id='bc_0_21T' class='comment-thread inline-thread' kind='t'   t='0' u='0'><span id='bc_0_21TT' class='thread-toggle thread-expanded' kind='g'><span id='bc_0_21TA' class='thread-arrow'></span><span id='bc_0_21TN' class='thread-count'><span id='bc_0_21TNT' style='display: none;'></span><span id='bc_0_21TNU' style='display: none;'></span><a href='javascript:;' target='_self'>Replies</a><div id='bc_0_21TD' class='thread-dropContainer thread-expanded'><span class='thread-drop'></span></div></span></span><ol id='bc_0_21TC' class='thread-chrome thread-expanded'><div><li id='bc_0_21B' class='comment' kind='b'><div class='avatar-image-container'><img src='//3.bp.blogspot.com/-l6dnDFetIWg/VEq81MZW-KI/AAAAAAAABnE/RD4xgUI2Ftc/s35/hedge2.jpg'></img></div><div id='c8386014932781223013' class='comment-block'><div id='bc_0_21M' class='comment-header' kind='m'><cite class='user blog-author'><a rel='nofollow' href='https://www.blogger.com/profile/00867710965331025912'>laginimaineb</a></cite><span class='icon user blog-author'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1497815101004#c8386014932781223013'>18/06/2017, 22:45</a></span></div><p id='bc_0_21MC' class='comment-content'>Hi CrazyGalaxy,<br /><br />I didn&#39;t do anything fancy - I simply used OpenSSL&#39;s RSA_public_decrypt (https://www.openssl.org/docs/man1.1.0/crypto/RSA_public_decrypt.html) for the &quot;decryption&quot;.<br /><br />To get OpenSSL to load the public key, I did write a small PyCrypto script to define the public key from the parameters (e,N) using RSA.construct (https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct), and then saved them to a PEM.<br /><br />All the best,<br />Gal. </p><span id='bc_0_21MN' class='comment-actions secondary-text' kind='m'><span class='item-control blog-admin pid-1869888142'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=8386014932781223013'>Delete</a></span></span></div><div id='bc_0_21BR' class='comment-replies'></div><div id='bc_0_21B_box' class='comment-replybox-single'></div></li></div><div id='bc_0_21I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Reply</a></div></ol><div id='bc_0_21T_box' class='comment-replybox-thread'></div></div></span></div><div id='bc_0_22B_box' class='comment-replybox-single'></div></li><li id='bc_0_23B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c2636005355093010540' class='comment-block'><div id='bc_0_23M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/10545502443931256997'>HPuff</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1502191139446#c2636005355093010540'>08/08/2017, 14:18</a></span></div><p id='bc_0_23MC' class='comment-content'>How do you get to the trustlets in the first place? Using the link to the shamu firmware that you provide I find a system.img file in which I assume the widevine trustlet exists, but I cannot continue from here. How did you get to the actual file?</p><span id='bc_0_23MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-1726106582'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=2636005355093010540'>Delete</a></span></span></div><div id='bc_0_23BR' class='comment-replies'></div><div id='bc_0_23B_box' class='comment-replybox-single'></div></li><li id='bc_0_24B' class='comment' kind='b'><div class='avatar-image-container'><img src='//lh3.googleusercontent.com/zFdxGE77vvD2w5xHy6jkVuElKv-U9_9qLkRYK8OnbDeJPtjSZ82UPq5w6hJ-SA=s35'></img></div><div id='c3032727021245116243' class='comment-block'><div id='bc_0_24M' class='comment-header' kind='m'><cite class='user'><a rel='nofollow' href='https://www.blogger.com/profile/14153638839604310005'>陈俊浩</a></cite><span class='icon user'></span><span class='datetime secondary-text'><a rel='nofollow' href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html?showComment=1517275148592#c3032727021245116243'>30/01/2018, 03:19</a></span></div><p id='bc_0_24MC' class='comment-content'>hi<br />when i use the QSEECom_start_app,return an error :QSEECom_start_app(.., &#39;/firmware/image/&#39;, &#39;***&#39;, 1048640) = &#39;Invalid argument&#39;.<br />please help me check<br />tks</p><span id='bc_0_24MN' class='comment-actions secondary-text' kind='m'><a kind='i' href='javascript:;' target='_self' o='r'>Reply</a><span class='item-control blog-admin pid-36528537'><a o='d' target='_self' href='https://www.blogger.com/delete-comment.g?blogID=2029700426505953971&amp;postID=3032727021245116243'>Delete</a></span></span></div><div id='bc_0_24BR' class='comment-replies'></div><div id='bc_0_24B_box' class='comment-replybox-single'></div></li></ol><div id='bc_0_25I' class='continue' kind='ci'><a href='javascript:;' target='_self'>Add comment</a></div><div id='bc_0_25T_box' class='comment-replybox-thread'></div><div id='bc_0_25L' class='loadmore loaded' kind='rb'><a href='javascript:;' target='_self'>Load more...</a></div></div></div></div>
+</div>
+</div>
+<p class='comment-footer'>
+<div class='comment-form'>
+<a name='comment-form'></a>
+<p>
+</p>
+<a href='https://www.blogger.com/comment-iframe.g?blogID=2029700426505953971&postID=7126667581278688733' id='comment-editor-src'></a>
+<iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' frameborder='0' height='410px' id='comment-editor' name='comment-editor' src='' width='100%'></iframe>
+<script src='https://www.blogger.com/static/v1/jsbin/2244480862-comment_from_post_iframe.js' type='text/javascript'></script>
+<script type='text/javascript'>
+      BLOG_CMT_createIframe('https://www.blogger.com/rpc_relay.html');
+    </script>
+</div>
+</p>
+<div id='backlinks-container'>
+<div id='Blog1_backlinks-container'>
+</div>
+</div>
+</div>
+</div>
+
+        </div></div>
+      
+</div>
+<div class='blog-pager' id='blog-pager'>
+<span id='blog-pager-newer-link'>
+<a class='blog-pager-newer-link' href='http://bits-please.blogspot.com/2016/05/qsee-privilege-escalation-vulnerability.html' id='Blog1_blog-pager-newer-link' title='Newer Post'>Newer Post</a>
+</span>
+<span id='blog-pager-older-link'>
+<a class='blog-pager-older-link' href='http://bits-please.blogspot.com/2016/02/unlocking-motorola-bootloader.html' id='Blog1_blog-pager-older-link' title='Older Post'>Older Post</a>
+</span>
+<a class='home-link' href='http://bits-please.blogspot.com/'>Home</a>
+</div>
+<div class='clear'></div>
+<div class='post-feeds'>
+<div class='feed-links'>
+Subscribe to:
+<a class='feed-link' href='http://bits-please.blogspot.com/feeds/7126667581278688733/comments/default' target='_blank' type='application/atom+xml'>Post Comments (Atom)</a>
+</div>
+</div>
+<script type='text/javascript'>
+    window.___gcfg = { 'lang': 'en-GB' };
+  </script>
+</div></div>
+</div>
+</div>
+<div class='column-left-outer'>
+<div class='column-left-inner'>
+<aside>
+</aside>
+</div>
+</div>
+<div class='column-right-outer'>
+<div class='column-right-inner'>
+<aside>
+</aside>
+</div>
+</div>
+</div>
+<div style='clear: both'></div>
+<!-- columns -->
+</div>
+<!-- main -->
+</div>
+</div>
+<div class='main-cap-bottom cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+<footer>
+<div class='footer-outer'>
+<div class='footer-cap-top cap-top'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+<div class='fauxborder-left footer-fauxborder-left'>
+<div class='fauxborder-right footer-fauxborder-right'></div>
+<div class='region-inner footer-inner'>
+<div class='foot section' id='footer-1'><div class='widget Profile' data-version='1' id='Profile1'>
+<h2>About Me</h2>
+<div class='widget-content'>
+<a href='https://www.blogger.com/profile/00867710965331025912'><img alt='My photo' class='profile-img' height='80' src='//3.bp.blogspot.com/-qf1mmrRg93g/VEq8YMFevXI/AAAAAAAABmg/eQCfldgcjPo/s80/hedge2.jpg' width='79'/></a>
+<dl class='profile-datablock'>
+<dt class='profile-data'>
+<a class='profile-name-link g-profile' href='https://www.blogger.com/profile/00867710965331025912' rel='author' style='background-image: url(//www.blogger.com/img/logo-16.png);'>
+laginimaineb
+</a>
+</dt>
+</dl>
+<a class='profile-link' href='https://www.blogger.com/profile/00867710965331025912' rel='author'>View my complete profile</a>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='//www.blogger.com/rearrange?blogID=2029700426505953971&widgetType=Profile&widgetId=Profile1&action=editWidget&sectionId=footer-1' onclick='return _WidgetManager._PopupConfig(document.getElementById("Profile1"));' target='configProfile1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div></div>
+<table border='0' cellpadding='0' cellspacing='0' class='section-columns columns-2'>
+<tbody>
+<tr>
+<td class='first columns-cell'>
+<div class='foot section' id='footer-2-1'><div class='widget BlogArchive' data-version='1' id='BlogArchive1'>
+<h2>Blog Archive</h2>
+<div class='widget-content'>
+<div id='ArchiveList'>
+<div id='BlogArchive1_ArchiveList'>
+<ul class='hierarchy'>
+<li class='archivedate expanded'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy toggle-open'>
+
+        &#9660;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/'>
+2016
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate expanded'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy toggle-open'>
+
+        &#9660;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+<ul class='posts'>
+<li><a href='http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html'>Exploring Qualcomm&#39;s Secure Execution Environment</a></li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2016/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2015/'>
+2015
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2015/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2015/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2014/'>
+2014
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+        &#9658;&#160;
+      
+</span>
+</a>
+<a class='post-count-link' href='http://bits-please.blogspot.com/2014/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='//www.blogger.com/rearrange?blogID=2029700426505953971&widgetType=BlogArchive&widgetId=BlogArchive1&action=editWidget&sectionId=footer-2-1' onclick='return _WidgetManager._PopupConfig(document.getElementById("BlogArchive1"));' target='configBlogArchive1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div></div>
+</td>
+<td class='columns-cell'>
+<div class='foot no-items section' id='footer-2-2'></div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- outside of the include in order to lock Attribution widget -->
+<div class='foot section' id='footer-3' name='Footer'><div class='widget Attribution' data-version='1' id='Attribution1'>
+<div class='widget-content' style='text-align: center;'>
+Picture Window theme. Powered by <a href='https://www.blogger.com' target='_blank'>Blogger</a>.
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='//www.blogger.com/rearrange?blogID=2029700426505953971&widgetType=Attribution&widgetId=Attribution1&action=editWidget&sectionId=footer-3' onclick='return _WidgetManager._PopupConfig(document.getElementById("Attribution1"));' target='configAttribution1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div></div>
+</div>
+</div>
+<div class='footer-cap-bottom cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+</footer>
+<!-- content -->
+</div>
+</div>
+<div class='content-cap-bottom cap-bottom'>
+<div class='cap-left'></div>
+<div class='cap-right'></div>
+</div>
+</div>
+</div>
+<script type='text/javascript'>
+    window.setTimeout(function() {
+        document.body.className = document.body.className.replace('loading', '');
+      }, 10);
+  </script>
+<script src='https://apis.google.com/js/plusone.js' type='text/javascript'></script>
+
+<script type="text/javascript" src="https://www.blogger.com/static/v1/widgets/3953819307-widgets.js"></script>
+<script type='text/javascript'>
+window['__wavt'] = 'AOuZoY5Mw7CqgzuEAF-7gZ_pJrh8OuwYmg:1518153207963';_WidgetManager._Init('//www.blogger.com/rearrange?blogID\x3d2029700426505953971','//bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html','2029700426505953971');
+_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'blogId': '2029700426505953971', 'title': 'Bits, Please!', 'url': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html', 'canonicalUrl': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html', 'homepageUrl': 'http://bits-please.blogspot.com/', 'searchUrl': 'http://bits-please.blogspot.com/search', 'canonicalHomepageUrl': 'http://bits-please.blogspot.com/', 'blogspotFaviconUrl': 'http://bits-please.blogspot.com/favicon.ico', 'bloggerUrl': 'https://www.blogger.com', 'hasCustomDomain': false, 'httpsEnabled': true, 'enabledCommentProfileImages': true, 'gPlusViewType': 'FILTERED_POSTMOD', 'adultContent': false, 'analyticsAccountNumber': '', 'encoding': 'UTF-8', 'locale': 'en-GB', 'localeUnderscoreDelimited': 'en_gb', 'languageDirection': 'ltr', 'isPrivate': false, 'isMobile': false, 'isMobileRequest': false, 'mobileClass': '', 'isPrivateBlog': false, 'feedLinks': '\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Bits, Please! - Atom\x22 href\x3d\x22http://bits-please.blogspot.com/feeds/posts/default\x22 /\x3e\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/rss+xml\x22 title\x3d\x22Bits, Please! - RSS\x22 href\x3d\x22http://bits-please.blogspot.com/feeds/posts/default?alt\x3drss\x22 /\x3e\n\x3clink rel\x3d\x22service.post\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Bits, Please! - Atom\x22 href\x3d\x22https://www.blogger.com/feeds/2029700426505953971/posts/default\x22 /\x3e\n\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Bits, Please! - Atom\x22 href\x3d\x22http://bits-please.blogspot.com/feeds/7126667581278688733/comments/default\x22 /\x3e\n', 'meTag': '', 'openIdOpTag': '', 'adsenseHostId': 'ca-host-pub-1556223355139109', 'adsenseHasAds': false, 'ieCssRetrofitLinks': '\x3c!--[if IE]\x3e\x3cscript type\x3d\x22text/javascript\x22 src\x3d\x22https://www.blogger.com/static/v1/jsbin/3061962209-ieretrofit.js\x22\x3e\x3c/script\x3e\n\x3c![endif]--\x3e', 'view': '', 'dynamicViewsCommentsSrc': '//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js', 'dynamicViewsScriptSrc': '//www.blogblog.com/dynamicviews/2c0662265d8e8627', 'plusOneApiSrc': 'https://apis.google.com/js/plusone.js', 'sharing': {'platforms': [{'name': 'Get link', 'key': 'link', 'shareMessage': 'Get link', 'target': ''}, {'name': 'Facebook', 'key': 'facebook', 'shareMessage': 'Share to Facebook', 'target': 'facebook'}, {'name': 'BlogThis!', 'key': 'blogThis', 'shareMessage': 'BlogThis!', 'target': 'blog'}, {'name': 'Twitter', 'key': 'twitter', 'shareMessage': 'Share to Twitter', 'target': 'twitter'}, {'name': 'Pinterest', 'key': 'pinterest', 'shareMessage': 'Share to Pinterest', 'target': 'pinterest'}, {'name': 'Google+', 'key': 'googlePlus', 'shareMessage': 'Share to Google+', 'target': 'googleplus'}, {'name': 'Email', 'key': 'email', 'shareMessage': 'Email', 'target': 'email'}], 'googlePlusShareButtonWidth': 300, 'googlePlusBootstrap': '\x3cscript type\x3d\x22text/javascript\x22\x3ewindow.___gcfg \x3d {\x27lang\x27: \x27en_GB\x27};\x3c/script\x3e'}, 'hasCustomJumpLinkMessage': false, 'jumpLinkMessage': 'Read more', 'pageType': 'item', 'postId': '7126667581278688733', 'postImageThumbnailUrl': 'https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s72-c/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png', 'postImageUrl': 'https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png', 'pageName': 'Exploring Qualcomm\x27s Secure Execution Environment', 'pageTitle': 'Bits, Please!: Exploring Qualcomm\x27s Secure Execution Environment', 'metaDescription': ''}}, {'name': 'features', 'data': {'lazy_images': 'false', 'unsupported_browser_message': 'false', 'sharing_get_link_dialog': 'true', 'sharing_native': 'false'}}, {'name': 'messages', 'data': {'edit': 'Edit', 'linkCopiedToClipboard': 'Link copied to clipboard', 'ok': 'Ok', 'postLink': 'Post link'}}, {'name': 'template', 'data': {'name': 'Picture Window', 'localizedName': 'Picture Window', 'isResponsive': false, 'isAlternateRendering': false, 'isCustom': false, 'variant': 'shade', 'variantId': 'shade'}}, {'name': 'view', 'data': {'classic': {'name': 'classic', 'url': '?view\x3dclassic'}, 'flipcard': {'name': 'flipcard', 'url': '?view\x3dflipcard'}, 'magazine': {'name': 'magazine', 'url': '?view\x3dmagazine'}, 'mosaic': {'name': 'mosaic', 'url': '?view\x3dmosaic'}, 'sidebar': {'name': 'sidebar', 'url': '?view\x3dsidebar'}, 'snapshot': {'name': 'snapshot', 'url': '?view\x3dsnapshot'}, 'timeslide': {'name': 'timeslide', 'url': '?view\x3dtimeslide'}, 'isMobile': false, 'title': 'Exploring Qualcomm\x27s Secure Execution Environment', 'description': 'A security blog focusing on Android, the Linux Kernel and everything nice.', 'featuredImage': 'https://4.bp.blogspot.com/--8-qxTK4nkQ/Vx5qgfd0MUI/AAAAAAAADlQ/JPi8hKxl0YI17w1vKfX0t-e4yuRTofwRACLcB/s1600/Screenshot%2Bfrom%2B2016-04-25%2B22%253A05%253A26.png', 'url': 'http://bits-please.blogspot.com/2016/04/exploring-qualcomms-secure-execution.html', 'type': 'item', 'isSingleItem': true, 'isMultipleItems': false, 'isError': false, 'isPage': false, 'isPost': true, 'isHomepage': false, 'isArchive': false, 'isLabelSearch': false, 'postId': 7126667581278688733}}]);
+_WidgetManager._RegisterWidget('_NavbarView', new _WidgetInfo('Navbar1', 'navbar', null, document.getElementById('Navbar1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HeaderView', new _WidgetInfo('Header1', 'header', null, document.getElementById('Header1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogView', new _WidgetInfo('Blog1', 'main', null, document.getElementById('Blog1'), {'cmtInteractionsEnabled': false, 'useNgc': false, 'lightboxEnabled': true, 'lightboxModuleUrl': 'https://www.blogger.com/static/v1/jsbin/760749880-lbx__en_gb.js', 'lightboxCssUrl': 'https://www.blogger.com/static/v1/v-css/368954415-lightbox_bundle.css'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_ProfileView', new _WidgetInfo('Profile1', 'footer-1', null, document.getElementById('Profile1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogArchiveView', new _WidgetInfo('BlogArchive1', 'footer-2-1', null, document.getElementById('BlogArchive1'), {'languageDirection': 'ltr', 'loadingMessage': 'Loading\x26hellip;'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_AttributionView', new _WidgetInfo('Attribution1', 'footer-3', null, document.getElementById('Attribution1'), {}, 'displayModeFull'));
+</script>
+</body>
+</html>
